@@ -8,6 +8,10 @@ from .models import User
 # Create your views here.
 class LoginView(View):
 
+    def get(self, request):
+        form = LoginForm()
+        return render(request, 'users/loginpage.html', {'form': form})
+
     def post(self, request):
         form = LoginForm(request.POST)
 
@@ -24,6 +28,9 @@ class LoginView(View):
 
 
 class RegisterView(View):
+
+    def get(self, request):
+        return render(request, 'register.html')
     def post(self, request):
         form = RegisterForm(request.POST)
 
@@ -40,6 +47,6 @@ class RegisterView(View):
         user = authenticate(username=user.username, password=user.password)
         if user is not None:
             login(request, user)
-            return render(request, 'index.html')
+            return render(request, 'loginpa')
         else:
             return render(request, 'login.html', {'form': form})
