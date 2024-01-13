@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm,CreateUserForm
 from .models import User
 
 
@@ -15,17 +15,20 @@ class LoginView(View):
     def post(self, request):
         form = LoginForm(request.POST)
 
+        print(form)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
+            print(form.cleaned_data)
+            email = form.data.get('email')
+            password = form.data.get('password')
 
-            user = authenticate(username=username, password=password)
+            user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                return render(request, 'index.html')
-            else:
-                return render(request, 'login.html', {'form': form})
-
+                return redirect('product.main_page')  # Redirect to the main page or any other desired URL
+        else:
+            print("not valid")
+            print(form.errors)
+        return render(request, 'users/loginpage.html', {'form': form})
 
 class RegisterView(View):
 

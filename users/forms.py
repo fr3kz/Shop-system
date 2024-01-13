@@ -8,16 +8,18 @@ class LoginForm(forms.Form):
 
     class Meta:
         model = User
-        fields = ['username','password']
+        fields = ['email','password']
+
+
 
 
 class RegisterForm(forms.Form):
     class Meta:
         model = User
-        fields = ['username','password','first_name','last_name','address','phone_number']
+        fields = ['email','password','first_name','last_name','address','phone_number']
 
     def clean_username(self):
-        username = self.cleaned_data.get('username')
+        username = self.cleaned_data.get('email')
         qs = User.objects.filter(username=username)
         if qs.exists():
             raise forms.ValidationError("Username is taken")
