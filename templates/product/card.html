@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+   <h2>Your Card</h2>
+   {% for product in card.products.all %}
+      <p>{{ product.name }}</p>
+      <p>Price: {{ product.price }}</p>
+   {% endfor %}
+{% endblock %}

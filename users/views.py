@@ -24,7 +24,7 @@ class LoginView(View):
             user = authenticate(request, email=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('product.main_page')  # Redirect to the main page or any other desired URL
+                return redirect('main_page')  # Redirect to the main page or any other desired URL
         else:
             print("not valid")
             print(form.errors)
@@ -50,6 +50,6 @@ class RegisterView(View):
         user = authenticate(username=user.username, password=user.password)
         if user is not None:
             login(request, user)
-            return render(request, 'loginpa')
+            return render(request, 'product/main.html')
         else:
             return render(request, 'login.html', {'form': form})
