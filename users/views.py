@@ -40,12 +40,12 @@ class RegisterView(View):
         if not form.is_valid():
             return
         form.clean_username()
-        user = User.objects.create_user(username=form.cleaned_data.get('username'),
-                                        password=form.cleaned_data.get('password'),
-                                        first_name=form.cleaned_data.get('first_name'),
-                                        last_name=form.cleaned_data.get('last_name'),
-                                        address=form.cleaned_data.get('address'),
-                                        phone_number=form.cleaned_data.get('phone_number'))
+        user = User.objects.create_user(username=form.data.get('username'),
+                                        password=form.data.get('password'),
+                                        first_name=form.data.get('first_name'),
+                                        last_name=form.data.get('last_name'),
+                                        address=form.data.get('address'),
+                                        phone_number=form.data.get('phone_number'))
 
         user = authenticate(username=user.username, password=user.password)
         if user is not None:

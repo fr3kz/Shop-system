@@ -1,3 +1,4 @@
+import django
 from django.db import models
 from users.models import User
 import datetime
@@ -14,21 +15,21 @@ class Product(models.Model):
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")
     description = models.TextField(default="")
-    rated = models.IntegerField()
+    rated = models.IntegerField(default=0)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, default="")
 
 
 class Discounts(models.Model):
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, default="")
     discount = models.IntegerField(default=0)
-    valid_date = models.DateField()
+ #   valid_date = models.DateField()
 
-    def check_date(self):
+  #  def check_date(self):
 
-        if self.valid_date > datetime.date.now():
-            return False
-        else:
-            return True
+   #     if self.valid_date > datetime.date.now():
+    #        return False
+   #     else:
+     #       return True
 
 
 class Card(models.Model):
@@ -41,12 +42,12 @@ class Card(models.Model):
     postal_code = models.CharField(max_length=6, default="")
     phone_number = models.CharField(max_length=9, default="")
     email = models.EmailField(default="")
-    date = models.DateField(auto_now_add=True)
     first_name = models.CharField(max_length=50, default="")
     last_name = models.CharField(max_length=50, default="")
 
     def __str__(self):
-        return f"Zamowienie nr {self.id} - {self.user.last_name} - {self.date}"
+        return f"Zamowienie nr {self.id} - {self.user.last_name} "
+
 
     def get_total_price(self):
         # check for discount
