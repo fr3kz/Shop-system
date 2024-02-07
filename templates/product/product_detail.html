@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static  %}
 {% block content %}
-    
+
     <div class="background-container">
     <img src='{% static 'images/collection-item1.jpg' %}' class="full-width-img" alt="Perfume">
 </div>
@@ -28,10 +28,19 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <p><a href="#" class="btn btn-primary">Dodaj do koszyka</a></p>
+                    <form action="{% url 'add_to_card' item_id=product.id %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Dodaj do koszyka</button>
+        </form>
                 </div>
             </div>
-            <div class="row">
+
+        </div>
+    </div>
+</div>
+
+    <div class="container mt-5">
+    <div class="row">
                 <div class="col">
                     <h3>Opinie:</h3>
                     {% if product.opinion_set.all %}
@@ -47,9 +56,7 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
     </div>
-</div>
 
 <!-- Stylowanie -->
 <style>

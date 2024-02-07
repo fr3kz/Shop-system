@@ -1,6 +1,8 @@
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import redirect
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, get_object_or_404
 from django.views import View
+from django.core import serializers
 
 from .models import Product, Card, Opinion
 from .forms import OpinionForm
@@ -46,25 +48,56 @@ class Review(View):
             return JsonResponse({'message': form.errors})
 
 
-
-
 class CardView(View):
 
-    def get(self, request):
-        card = request.session['card']
-        context = {
-            'card': card
-        }
+    def get(self, request, item_id):
+        return redirect('checkout')
 
-        return render(request, 'product/card.html', context=context)
-
-    def post(self, item_id, request):
+    def post(self, request, item_id):
+        # Sprawdzenie, czy klucz 'card' istnieje w sesji
         if 'card' not in request.session:
             card = Card.objects.create(user=request.user)
-            request.session['card'] = card
-        else:
-            card = request.session['card']
             product = Product.objects.get(id=item_id)
-            card.product.add(product).save()
+            card.product.add(product)
+            card.save()
+            request.session['card'] = card.id
 
-        return JsonResponse({'message': 'dodano'})
+            return redirect('checkout')
+        else:
+            cardid = request.session['card']
+            product = Product.objects.get(id=item_id)
+            card = Card.objects.get(id=cardid)
+            card.product.add(product)
+            card.save()
+            request.session['card'] = card.id
+
+            return redirect('checkout')
+
+        # Dodawanie produktu do koszyka
+
+
+
+
+class Checkout(View):
+    def get(self, request):
+        # Sprawdzenie, czy klucz 'card' istnieje w sesji
+        if 'card' in request.session:
+            cardid = request.session['card']
+            card = Card.objects.get(id=cardid)
+            card_id = card.id  # Przykładowy atrybut, który jest serializowalny do JSON
+            user_id = card.user.id  # Inny przykładowy atrybut
+            # Tutaj możesz przekazać inne atrybuty, które chcesz wyświetlić w kontekście szablonu
+            context = {
+                'card_id': card_id,
+                'user_id': user_id,
+            }
+            return render(request, 'product/checkout.html', context=context)
+        else:
+            # Jeśli klucz 'card' nie istnieje, utwórz nowy obiekt Card
+            card = Card.objects.create(user=request.user)
+            request.session['card'] = card.id
+            context = {
+                'card_id': None,  # Możesz przekazać wartość None lub dowolną inną, która oznacza brak karty w sesji
+            }
+            return render(request, 'product/checkout.html', context=context)
+
