@@ -1,10 +1,109 @@
 {% extends 'base.html' %}
-
 {% block content %}
-   {% for product in products %}
-      <h2>{{ product.name }}</h2>
-      <p>{{ product.description }}</p>
-      <p>Price: {{ product.price }}</p>
-      <a href="{% url 'product_detail' product.id %}">Details</a>
-   {% endfor %}
+{% load static %}
+
+<!-- Tło zajmujące 100% szerokości ekranu i 3/4 wysokości -->
+<div class="background-container">
+    <img src='{% static 'images/collection-item1.jpg' %}' class="full-width-img" alt="Perfume">
+</div>
+
+<div class="container mt-5">
+    <div class="row mt-3">
+        <div class="col">
+            <h2>Polecane Perfumy</h2>
+            <!-- Perfumy w kontenerach o tych samych wymiarach zewnętrznych -->
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for product in fproducts %}
+                <div class="col">
+                    <div class="card perfume-container">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <p class="card-text">Price: {{ product.price }}</p>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dodany odstęp między sekcjami -->
+<div style="margin-top: 150px;"></div>
+
+<div class="container mt-5">
+ <div class="row mt-3">
+        <div class="col">
+            <h2>Wyszukaj</h2>
+            <!-- Formularz wyszukiwania -->
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Search Perfumes" name="query">
+                    <button class="btn btn-outline-secondary" type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-5">
+    <div class="row mt-3">
+        <div class="col">
+            <h2>Wszystkie Perfumy</h2>
+            <!-- Perfumy w kontenerach o tych samych wymiarach zewnętrznych -->
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for product in products %}
+                <div class="col">
+                    <div class="card perfume-container">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <p class="card-text">Price: {{ product.price }}</p>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stylowanie -->
+<style>
+    .background-container {
+        width: 100%;
+        height: 75vh; /* 75% wysokości ekranu */
+        overflow: hidden; /* Zapobiega przewijaniu w pionie */
+    }
+
+    .full-width-img {
+        width: 100%;
+        height: auto;
+        object-fit: cover; /* Zapewnia, że obraz zostanie zmniejszony, aby wypełnić kontener */
+    }
+
+    .perfume-container {
+        width: 100%; /* Szerokość każdego pojemnika */
+        height: 300px; /* Stała wysokość dla każdego kontenera */
+        margin-bottom: 150px;
+        margin-top: 50px;/* Margines między kontenerami */
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 100%; /* Obraz wypełnia całą wysokość kontenera */
+        object-fit: cover; /* Zapewnia, że obraz zostanie zmniejszony, aby wypełnić kontener */
+    }
+
+    .card-body {
+        margin-top: auto; /* Umieść cenę i przycisk na samym dole */
+    }
+
+</style>
+
 {% endblock %}

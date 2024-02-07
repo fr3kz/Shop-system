@@ -10,7 +10,7 @@ class Product(models.Model):
     price = models.IntegerField()
     image = models.ImageField(upload_to="images/")
     description = models.TextField()
-
+    is_featured = models.BooleanField(default=False)  # Dodane pole
 
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")

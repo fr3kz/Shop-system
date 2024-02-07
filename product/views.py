@@ -9,9 +9,10 @@ from .forms import OpinionForm
 # Create your views here.
 class MainView(View):
     products = Product.objects.all()
-
+    fproducts = Product.objects.filter(is_featured=True)
     context = {
         'products': products,
+        'fproducts': fproducts,
 
     }
 
@@ -22,7 +23,11 @@ class MainView(View):
 class ProductView(View):
     def get(self, request, product_id):  # product_id zostaje jako argument URL
         product = Product.objects.get(id=product_id)
-        return render(request, 'product/product_detail.html', {'product': product})
+        context = {
+            'product': product,
+            'opinions': product.opinion_set.all()
+        }
+        return render(request, 'product/product_detail.html', context=context)
 
 
 class Review(View):
