@@ -1,8 +1,53 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Home</h1>
-    <p>Welcome to the home page!</p>
-    <p>Here are some links to other pages:</p>
+    <div style="background-color: #f2f2f2; padding: 20px; border-radius: 10px; text-align: center;">
+        <h1>Checkout</h1>
 
+        {% if card_id %}
+            <h2>Your Cart</h2>
+            <ul style="list-style-type: none; padding: 0;">
+                {% for product in card_products %}
+                    <li>{{ product.title }} - ${{ product.price }}</li>
+
+                {% endfor %}
+            </ul>
+            <p>Total Price: ${{ card_price }}</p>
+            {% if card_promocode %}
+                        <p>Kod promocyjny: {{ promocode.discount }}%</p>
+                    {% endif %}
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+
+        <h2>Order Details</h2>
+        <form method="POST" action="}" style="margin: 0 auto; max-width: 400px;">
+            {% csrf_token %}
+            <label for="street">Street:</label><br>
+            <input type="text" id="street" name="street"><br>
+            <label for="city">City:</label><br>
+            <input type="text" id="city" name="city"><br>
+            <label for="postal_code">Postal Code:</label><br>
+            <input type="text" id="postal_code" name="postal_code"><br>
+            <label for="phone_number">Phone Number:</label><br>
+            <input type="text" id="phone_number" name="phone_number"><br>
+            <label for="email">Email:</label><br>
+            <input type="email" id="email" name="email"><br>
+            <label for="first_name">First Name:</label><br>
+            <input type="text" id="first_name" name="first_name"><br>
+            <label for="last_name">Last Name:</label><br>
+            <input type="text" id="last_name" name="last_name"><br>
+            <br>
+            <input type="submit" value="Place Order" style="background-color: #4CAF50; color: white; padding: 14px 20px; margin: 8px 0; border: none; border-radius: 4px; cursor: pointer; width: 100%;">
+        </form>
+
+            <form action="{% url 'checkout' %}" method="post">
+            {% csrf_token %}
+                <input type="text" name="promo_code" placeholder="Enter promo code">
+            <button type="submit">Update price</button>
+        </form>
+
+
+
+    </div>
 {% endblock %}

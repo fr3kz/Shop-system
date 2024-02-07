@@ -12,6 +12,7 @@ class Product(models.Model):
     description = models.TextField()
     is_featured = models.BooleanField(default=False)  # Dodane pole
 
+
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")
     description = models.TextField(default="")
@@ -20,16 +21,7 @@ class Opinion(models.Model):
 
 
 class Discounts(models.Model):
-    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, default="")
     discount = models.IntegerField(default=0)
- #   valid_date = models.DateField()
-
-  #  def check_date(self):
-
-   #     if self.valid_date > datetime.date.now():
-    #        return False
-   #     else:
-     #       return True
 
 
 class Card(models.Model):
@@ -44,16 +36,33 @@ class Card(models.Model):
     email = models.EmailField(default="")
     first_name = models.CharField(max_length=50, default="")
     last_name = models.CharField(max_length=50, default="")
+    promo_code = models.CharField(max_length=10, default="")
 
     def __str__(self):
         return f"Zamowienie nr {self.id} - {self.user.last_name} "
 
-
-    def get_total_price(self):
+    def get_total_price(self, products):
+        self.price = 0
         # check for discount
-        for product in self.product:
-            if Discounts.objects.get(product=product).check_date():
-                self.price += (product.price - (Discounts.objects.get(product=product).discount))
-            else:
-                self.price += product.price
+        for product in products:
+            self.price += product.price
+
         return self.price
+
+
+class Promo_code(models.Model):
+    code = models.CharField(max_length=10, default="")
+    discount = models.IntegerField(default=0)
+    title = models.CharField(max_length=50, default="")
+    max_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.title} - {self.code} - {self.discount}%"
+
+    def check_using_limit(self):
+        if self.max_count > 0:
+            self.max_count -= 1
+            self.save()
+            return True
+        else:
+            return False

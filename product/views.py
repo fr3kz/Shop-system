@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views import View
 from django.core import serializers
 
-from .models import Product, Card, Opinion
+from .models import Product, Card, Opinion, Promo_code
 from .forms import OpinionForm
 
 
@@ -73,31 +73,48 @@ class CardView(View):
 
             return redirect('checkout')
 
-        # Dodawanie produktu do koszyka
-
-
-
 
 class Checkout(View):
     def get(self, request):
-        # Sprawdzenie, czy klucz 'card' istnieje w sesji
+
         if 'card' in request.session:
             cardid = request.session['card']
             card = Card.objects.get(id=cardid)
-            card_id = card.id  # Przykładowy atrybut, który jest serializowalny do JSON
-            user_id = card.user.id  # Inny przykładowy atrybut
-            # Tutaj możesz przekazać inne atrybuty, które chcesz wyświetlić w kontekście szablonu
+            total_price = card.get_total_price(card.product.all())
+            card.price = total_price
+            card.save()
+            promo_code = Card.promo_code
+            Promocode = None
+            card_promocde = card.promo_code
+            if card_promocde:
+                Promocode = Promo_code.objects.get(code=card_promocde)
+
+
             context = {
-                'card_id': card_id,
-                'user_id': user_id,
+                'card_id': cardid,
+                'card_products': card.product.all(),
+                'card_price': total_price,
+                'card_promocode': card_promocde,
+                'promocode': Promocode,
             }
             return render(request, 'product/checkout.html', context=context)
         else:
-            # Jeśli klucz 'card' nie istnieje, utwórz nowy obiekt Card
-            card = Card.objects.create(user=request.user)
-            request.session['card'] = card.id
-            context = {
-                'card_id': None,  # Możesz przekazać wartość None lub dowolną inną, która oznacza brak karty w sesji
-            }
-            return render(request, 'product/checkout.html', context=context)
+            return render(request, 'product/main.html')
 
+    def post(self, request):
+        promo_code = request.POST.get('promo_code')
+        if promo_code:
+            cardid = request.session['card']
+            card = Card.objects.get(id=cardid)
+
+            if card.promo_code:
+                return HttpResponse('You have already used promo code', status=400)
+
+
+            promo = Promo_code.objects.get(code=promo_code)
+            card.price *= (1 - (promo.discount / 100))
+            card.promo_code = promo_code
+            card.save()
+            return redirect('checkout')
+        else:
+            return HttpResponse('Invalid promo code', status=400)
