@@ -11,7 +11,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to="images/")
     description = models.TextField()
     is_featured = models.BooleanField(default=False)  # Dodane pole
-
+    amount = models.IntegerField(default=1)
 
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")

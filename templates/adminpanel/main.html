@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container" style="margin-top: 20px;">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card text-center mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Liczba zamówień</h5>
+                        <p class="card-text">{{ orders_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Liczba użytkowników</h5>
+                        <p class="card-text">{{ users_count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Przychody</h5>
+                        <p class="card-text">{{ revenue }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Produkty na stanie</h5>
+                        <p class="card-text">{{ products_in_stock }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <form method="post" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+            {{ product_form.as_p }}
+            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            {{ promo_code_form.as_p }}
+            <button type="submit" class="btn btn-primary">Dodaj kod promocyjny</button>
+        </form>
+    </div>
+{% endblock %}
