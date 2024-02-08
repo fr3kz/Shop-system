@@ -15,9 +15,7 @@ class LoginView(View):
     def post(self, request):
         form = LoginForm(request.POST)
 
-        print(form)
         if form.is_valid():
-            print(form.cleaned_data)
             email = form.data.get('email')
             password = form.data.get('password')
 
@@ -33,7 +31,8 @@ class LoginView(View):
 class RegisterView(View):
 
     def get(self, request):
-        return render(request, 'login.html')
+        form = RegisterForm()
+        return render(request, 'users/loginpage.html', {'form': form})
     def post(self, request):
         form = RegisterForm(request.POST)
 
@@ -52,4 +51,4 @@ class RegisterView(View):
             login(request, user)
             return render(request, 'product/main.html')
         else:
-            return render(request, 'login.html', {'form': form})
+            return render(request, 'users/loginpage.html', {'form': form})

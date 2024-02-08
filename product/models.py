@@ -25,18 +25,18 @@ class Discounts(models.Model):
 
 
 class Card(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")
-    product = models.ManyToManyField(to=Product, default="")
-    quantity = models.IntegerField(default=1)
-    price = models.IntegerField(default=0)
-    street = models.CharField(max_length=100, default="")
-    city = models.CharField(max_length=100, default="")
-    postal_code = models.CharField(max_length=6, default="")
-    phone_number = models.CharField(max_length=9, default="")
-    email = models.EmailField(default="")
-    first_name = models.CharField(max_length=50, default="")
-    last_name = models.CharField(max_length=50, default="")
-    promo_code = models.CharField(max_length=10, default="")
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, default="", blank=True)
+    product = models.ManyToManyField(to=Product, default="", blank=True)
+    quantity = models.IntegerField(default=1, blank=True)
+    price = models.IntegerField(default=0,  blank=True)
+    street = models.CharField(max_length=100, default="", blank=True)
+    city = models.CharField(max_length=100, default="", blank=True)
+    postal_code = models.CharField(max_length=6, default="", blank=True)
+    phone_number = models.CharField(max_length=9, default="", blank=True)
+    email = models.EmailField(default="", blank=True)
+    first_name = models.CharField(max_length=50, default="", blank=True)
+    last_name = models.CharField(max_length=50, default="", blank=True)
+    promo_code = models.CharField(max_length=10, default="", blank=True)
 
     def __str__(self):
         return f"Zamowienie nr {self.id} - {self.user.last_name} "

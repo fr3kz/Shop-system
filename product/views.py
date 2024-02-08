@@ -55,10 +55,11 @@ class CardView(View):
 
     def post(self, request, item_id):
         # Sprawdzenie, czy klucz 'card' istnieje w sesji
-        if 'card' not in request.session:
+        if 'card'  in request.session:
             card = Card.objects.create(user=request.user)
             product = Product.objects.get(id=item_id)
             card.product.add(product)
+            card.price += product.price
             card.save()
             request.session['card'] = card.id
 
@@ -80,9 +81,8 @@ class Checkout(View):
         if 'card' in request.session:
             cardid = request.session['card']
             card = Card.objects.get(id=cardid)
-            total_price = card.get_total_price(card.product.all())
-            card.price = total_price
-            card.save()
+            total_price = card.price
+
             promo_code = Card.promo_code
             Promocode = None
             card_promocde = card.promo_code
@@ -112,9 +112,15 @@ class Checkout(View):
 
 
             promo = Promo_code.objects.get(code=promo_code)
-            card.price *= (1 - (promo.discount / 100))
-            card.promo_code = promo_code
-            card.save()
-            return redirect('checkout')
+
+            if promo is not None:
+                card.price *= (1 - (promo.discount / 100))
+                card.promo_code = promo_code
+                card.save()
+                return redirect('checkout')
+            else:
+                return HttpResponse('Invalid promo code', status=400)
+
+
         else:
             return HttpResponse('Invalid promo code', status=400)
