@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_admin.html' %}
 
 {% block content %}
     <div class="container" style="margin-top: 20px;">
@@ -36,21 +36,5 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="container">
-        <form method="post" enctype="multipart/form-data" class="mt-4">
-            {% csrf_token %}
-            {{ product_form.as_p }}
-            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
-        </form>
-    </div>
-
-    <div class="container">
-        <form method="post" class="mt-4">
-            {% csrf_token %}
-            {{ promo_code_form.as_p }}
-            <button type="submit" class="btn btn-primary">Dodaj kod promocyjny</button>
-        </form>
     </div>
 {% endblock %}

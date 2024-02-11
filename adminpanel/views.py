@@ -2,18 +2,20 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import Loginform, AddProductForm, AddpromoCodeForm
-from product.models import Product, Promo_code,Card
+from product.models import Product, Promo_code, Card,Opinion
 from users.models import User
 
-# Create your views here.
+
+
 class LoginView(View):
     def get(self, request):
         form = Loginform()
         return render(request, 'adminpanel/login.html', {'form': form})
+
     def post(self, request):
         form = Loginform(request.POST)
         if form.is_valid():
-            user= form.login(request, form.data['email'], form.data['password'])
+            user = form.login(request, form.data['email'], form.data['password'])
             if user is not None:
                 login(request, user)
                 return redirect('adminpanel')
@@ -28,7 +30,6 @@ class AdminPanelView(View):
         users_count = User.objects.count()
         total_revenue = sum(order.price for order in Card.objects.all())
         products_in_stock = sum(product.amount for product in Product.objects.all())
-
 
         product_form = AddProductForm()
         promo_code_form = AddpromoCodeForm()
@@ -59,8 +60,12 @@ class AdminPanelView(View):
 
 class AddProductView(View):
     def get(self, request):
-        form = AddProductForm()
-        return render(request, 'adminpanel/addproduct.html', {'form': form})
+        product_form = AddProductForm()
+        context = {
+            'product_form': product_form,
+        }
+        return render(request, 'adminpanel/addproduct.html', context=context)
+
     def post(self, request):
         form = AddProductForm(request.POST, request.FILES)
         if form.is_valid():
@@ -72,8 +77,13 @@ class AddProductView(View):
 
 class AddPromoCodeView(View):
     def get(self, request):
-        form = AddpromoCodeForm()
-        return render(request, 'adminpanel/addpromocode.html', {'form': form})
+        promo_code_form = AddpromoCodeForm()
+        context = {
+            'promo_code_form': promo_code_form
+        }
+
+        return render(request, 'adminpanel/addpromocode.html', context=context)
+
     def post(self, request):
 
         form = AddpromoCodeForm(request.POST)
@@ -83,3 +93,48 @@ class AddPromoCodeView(View):
         else:
             return render(request, 'adminpanel/addpromocode.html', {'form': form})
 
+
+class OrdersView(View):
+    def get(self, request):
+        orders = Card.objects.all()
+        context = {
+            'orders': orders
+        }
+        return render(request, 'adminpanel/orders.html', context=context)
+
+
+class StockView(View):
+    def get(self, request):
+        products = Product.objects.all()
+        featured_products = Product.objects.filter(is_featured=True)
+
+        context = {
+            'products': products,
+            'featured_products': featured_products,
+        }
+        return render(request, 'adminpanel/stock.html', context=context)
+
+
+
+def set_off_product(request, product_id):
+    product = Product.objects.get(id=product_id)
+    product.set_off(self=product)
+    return redirect('stock')
+
+class OpinionsView(View):
+    def get(self, request):
+        opinions = Opinion.objects.all()
+        context = {
+            'opinions': opinions
+        }
+        return render(request, 'adminpanel/opinions.html', context=context)
+
+
+class ProductEditView(View):
+        def get(self,request, product_id):
+            product = Product.objects.get(id=product_id)
+            form = AddProductForm(instance=product)
+            context = {
+                'form': form
+            }
+            return render(request, 'adminpanel/editproduct.html', context=context)

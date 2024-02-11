@@ -80,7 +80,8 @@ class Checkout(View):
 
         if 'card' in request.session:
             cardid = request.session['card']
-            card = Card.objects.get(id=cardid)
+            #TODO: sprawdzenie czy to gowno dziala
+            card = Card.objects.get_or_create(id=cardid)
             total_price = card.price
 
             promo_code = Card.promo_code

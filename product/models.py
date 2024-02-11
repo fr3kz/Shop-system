@@ -12,6 +12,16 @@ class Product(models.Model):
     description = models.TextField()
     is_featured = models.BooleanField(default=False)  # Dodane pole
     amount = models.IntegerField(default=1)
+    is_on = models.BooleanField(default=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+    @staticmethod
+    def set_off(self):
+        self.is_on = False
+        self.save()
+
 
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")
@@ -28,7 +38,7 @@ class Card(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, default="", blank=True)
     product = models.ManyToManyField(to=Product, default="", blank=True)
     quantity = models.IntegerField(default=1, blank=True)
-    price = models.IntegerField(default=0,  blank=True)
+    price = models.IntegerField(default=0, blank=True)
     street = models.CharField(max_length=100, default="", blank=True)
     city = models.CharField(max_length=100, default="", blank=True)
     postal_code = models.CharField(max_length=6, default="", blank=True)
@@ -37,6 +47,7 @@ class Card(models.Model):
     first_name = models.CharField(max_length=50, default="", blank=True)
     last_name = models.CharField(max_length=50, default="", blank=True)
     promo_code = models.CharField(max_length=10, default="", blank=True)
+    is_order = models.BooleanField(default=False, blank=True)
 
     def __str__(self):
         return f"Zamowienie nr {self.id} - {self.user.last_name} "
@@ -48,6 +59,10 @@ class Card(models.Model):
             self.price += product.price
 
         return self.price
+
+    def make_order(self):
+        self.is_order = True
+        self.save()
 
 
 class Promo_code(models.Model):

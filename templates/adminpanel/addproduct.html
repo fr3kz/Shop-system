@@ -1,10 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base_admin.html' %}
 
-</body>
-</html>
+{% block content %}
+    <h1 class="mt-4">Dodaj produkt</h1>
+    <div class="container">
+        <form method="post" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+            {{ product_form.as_p }}
+            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+        </form>
+    </div>
+
+{% endblock %}
