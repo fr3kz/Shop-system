@@ -2,9 +2,8 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import Loginform, AddProductForm, AddpromoCodeForm
-from product.models import Product, Promo_code, Card,Opinion
+from product.models import Product, Promo_code, Card, Opinion
 from users.models import User
-
 
 
 class LoginView(View):
@@ -96,6 +95,8 @@ class AddPromoCodeView(View):
 
 class OrdersView(View):
     def get(self, request):
+        # TODO: ustawic filtrowanie tylko orderow
+        # orders = Card.objects.filter(is_order=True)
         orders = Card.objects.all()
         context = {
             'orders': orders
@@ -115,12 +116,6 @@ class StockView(View):
         return render(request, 'adminpanel/stock.html', context=context)
 
 
-
-def set_off_product(request, product_id):
-    product = Product.objects.get(id=product_id)
-    product.set_off(self=product)
-    return redirect('stock')
-
 class OpinionsView(View):
     def get(self, request):
         opinions = Opinion.objects.all()
@@ -131,10 +126,36 @@ class OpinionsView(View):
 
 
 class ProductEditView(View):
-        def get(self,request, product_id):
-            product = Product.objects.get(id=product_id)
-            form = AddProductForm(instance=product)
-            context = {
-                'form': form
-            }
-            return render(request, 'adminpanel/editproduct.html', context=context)
+    def get(self, request, product_id):
+        product = Product.objects.get(id=product_id)
+        form = AddProductForm(instance=product)
+        context = {
+            'form': form
+        }
+        return render(request, 'adminpanel/editproduct.html', context=context)
+
+
+def set_off_product(request, product_id):
+    product = Product.objects.get(id=product_id)
+    product.set_off(self=product)
+    return redirect('stock')
+
+
+def mark_order_as_shipped(request, order_id):
+    order = Card.objects.get(id=order_id)
+    order.is_shipped = True
+    order.save()
+    return redirect('orders')
+
+
+def mark_order_as_delivered(request, order_id):
+    order = Card.objects.get(id=order_id)
+    order.is_delivered = True
+    order.save()
+    return redirect('orders')
+
+
+def delete_opinion(request, opinion_id):
+    opinon = Opinion.objects.get(id=opinion_id)
+    opinon.delete()
+    return redirect('opinions')

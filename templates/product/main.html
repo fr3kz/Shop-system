@@ -57,7 +57,7 @@
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 {% for product in products %}
                 <div class="col">
-                    <div class="card perfume-container">
+                    <div class="card perfume-container2">
                         <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ product.name }}</h5>
@@ -91,6 +91,13 @@
         width: 100%; /* Szerokość każdego pojemnika */
         height: 300px; /* Stała wysokość dla każdego kontenera */
         margin-bottom: 150px;
+        margin-top: 50px;/* Margines między kontenerami */
+    }
+
+    .perfume-container2 {
+        width: 100%; /* Szerokość każdego pojemnika */
+        height: 350px; /* Stała wysokość dla każdego kontenera */
+        margin-bottom: 200px;
         margin-top: 50px;/* Margines między kontenerami */
     }
 

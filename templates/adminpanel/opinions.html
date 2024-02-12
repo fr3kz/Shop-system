@@ -1,13 +1,35 @@
 {% extends 'base_admin.html' %}
 
 {% block content %}
-    <h1 class="mt-4">Dodaj kod promocyjny</h1>
      <div class="container">
-        <form method="post" class="mt-4">
-            {% csrf_token %}
-            {{ promo_code_form.as_p }}
-            <button type="submit" class="btn btn-primary">Dodaj kod promocyjny</button>
-        </form>
-    </div>
-
+         <h1 class="mt-4">Opinie</h1>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Nazwa</th>
+                                <th scope="col">Ocena</th>
+                                <th scope="col">Opis</th>
+                                <th scope="col">Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for opinion in opinions %}
+                                <tr>
+                                    <th scope="row">{{ opinion.id }}</th>
+                                    <td>{{ opinion.product.title }}</td>
+                                    <td>{{ opinion.rated }}/5</td>
+                                    <td>{{ opinion.description }}</td>
+                                    <td>
+                                        <a href="{% url 'delete_opinion' opinion.id %}" class="btn btn-danger">Usuń</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+     </div>
 {% endblock %}

@@ -80,8 +80,8 @@ class Checkout(View):
 
         if 'card' in request.session:
             cardid = request.session['card']
-            #TODO: sprawdzenie czy to gowno dziala
-            card = Card.objects.get_or_create(id=cardid)
+            #TODO: sprawdzenie czy to gowno dziala EDIT- NIE DZIALA
+            card = Card.objects.get(id=cardid)
             total_price = card.price
 
             promo_code = Card.promo_code
@@ -125,3 +125,8 @@ class Checkout(View):
 
         else:
             return HttpResponse('Invalid promo code', status=400)
+
+
+#TODO: dodanie live search
+#TODO: Ogaraniecie checkout
+#TODO: Edycja koszyka
