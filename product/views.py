@@ -1,3 +1,4 @@
+import django.utils.timezone
 from django.shortcuts import redirect
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -55,7 +56,7 @@ class CardView(View):
 
     def post(self, request, item_id):
         # Sprawdzenie, czy klucz 'card' istnieje w sesji
-        if 'card'  in request.session:
+        if 'card' in request.session:
             card = Card.objects.create(user=request.user)
             product = Product.objects.get(id=item_id)
             card.product.add(product)
@@ -75,12 +76,13 @@ class CardView(View):
             return redirect('checkout')
 
 
+# TODO: Edycja koszyka
 class Checkout(View):
     def get(self, request):
 
         if 'card' in request.session:
             cardid = request.session['card']
-            #TODO: sprawdzenie czy to gowno dziala EDIT- NIE DZIALA
+            # Todo: sprawdzic co sie stanie jak w sesji bedzie zapisane id a nie bedzie w bazie
             card = Card.objects.get(id=cardid)
             total_price = card.price
 
@@ -89,7 +91,6 @@ class Checkout(View):
             card_promocde = card.promo_code
             if card_promocde:
                 Promocode = Promo_code.objects.get(code=card_promocde)
-
 
             context = {
                 'card_id': cardid,
@@ -111,7 +112,6 @@ class Checkout(View):
             if card.promo_code:
                 return HttpResponse('You have already used promo code', status=400)
 
-
             promo = Promo_code.objects.get(code=promo_code)
 
             if promo is not None:
@@ -127,6 +127,29 @@ class Checkout(View):
             return HttpResponse('Invalid promo code', status=400)
 
 
-#TODO: dodanie live search
-#TODO: Ogaraniecie checkout
-#TODO: Edycja koszyka
+# TODO: Ogaraniecie checkout
+def Billing(request):
+    card = Card.objects.get(id=request.session['card'])
+    #Ogarnac jak ktos nie ma konta
+    user = request.user
+    card.first_name = request.POST.get('first_name')
+    card.last_name = request.POST.get('last_name')
+    card.email = request.POST.get('email')
+    card.date = django.utils.timezone.now()
+    card.phone_number = request.POST.get('phone_number')
+    card.postal_code = request.POST.get('postal_code')
+    card.city = request.POST.get('city')
+    card.street = request.POST.get('street')
+    card.user = user
+    card.save()
+    card.make_order()
+
+
+    #Todo:  WERYFIKACJA PLATNOSCI
+
+    return redirect('main_page')
+
+
+# TODO: dodanie live search
+def live_search(request):
+    pass

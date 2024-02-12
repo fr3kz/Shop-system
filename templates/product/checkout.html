@@ -21,7 +21,7 @@
         {% endif %}
 
         <h2>Order Details</h2>
-        <form method="POST" action="}" style="margin: 0 auto; max-width: 400px;">
+        <form method="POST" action="{% url 'billing' %}" style="margin: 0 auto; max-width: 400px;">
             {% csrf_token %}
             <label for="street">Street:</label><br>
             <input type="text" id="street" name="street"><br>

@@ -159,3 +159,6 @@ def delete_opinion(request, opinion_id):
     opinon = Opinion.objects.get(id=opinion_id)
     opinon.delete()
     return redirect('opinions')
+
+
+#Todo: dodac w opcji wszystkie zamowienia mozliwosc wejscia w szczegoly zamowienia

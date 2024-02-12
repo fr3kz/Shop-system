@@ -1,13 +1,31 @@
 {% extends 'base_admin.html' %}
 
 {% block content %}
-    <h1 class="mt-4">Dodaj produkt</h1>
-    <div class="container">
-        <form method="post" enctype="multipart/form-data" class="mt-4">
-            {% csrf_token %}
-            {{ product_form.as_p }}
-            <button type="submit" class="btn btn-primary">Dodaj produkt</button>
-        </form>
+<div class="container mt-4">
+    <h1>Dodaj produkt</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_name">Nazwa produktu:</label>
+                    {{ product_form.name }}
+                </div>
+                <div class="form-group">
+                    <label for="id_description">Opis:</label>
+                    {{ product_form.description }}
+                </div>
+                <div class="form-group">
+                    <label for="id_price">Cena:</label>
+                    {{ product_form.price }}
+                </div>
+                <div class="form-group">
+                    <label for="id_image">Obrazek:</label>
+                    {{ product_form.image }}
+                </div>
+                <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+            </form>
+        </div>
     </div>
-
+</div>
 {% endblock %}

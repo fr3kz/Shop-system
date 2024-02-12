@@ -1,13 +1,23 @@
 {% extends 'base_admin.html' %}
 
 {% block content %}
-    <h1 class="mt-4">Dodaj kod promocyjny</h1>
-     <div class="container">
-        <form method="post" class="mt-4">
-            {% csrf_token %}
-            {{ promo_code_form.as_p }}
-            <button type="submit" class="btn btn-primary">Dodaj kod promocyjny</button>
-        </form>
+<div class="container mt-4">
+    <h1>Dodaj kod promocyjny</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_code">Kod promocyjny:</label>
+                    {{ promo_code_form.code }}
+                </div>
+                <div class="form-group">
+                    <label for="id_discount">Rabat:</label>
+                    {{ promo_code_form.discount }}
+                </div>
+                <button type="submit" class="btn btn-primary">Dodaj kod promocyjny</button>
+            </form>
+        </div>
     </div>
-
+</div>
 {% endblock %}
