@@ -40,8 +40,10 @@ INSTALLED_APPS = [
 
     'users',
     'product',
-    'adminpanel'
-]
+    'adminpanel',
+
+
+    'stripe',]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -138,3 +140,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'users.User'
+
+STRIPE_PUBLIC_KEY = "pk_test_51Ok7JLJIzfTZ5jUz575dou7carjQa04kbq6jk8qBZtnYrlIYWxSG4uCsSx8zWJGME3i1JJuB4kFgrweosyxcZpeJ00ZamkGPiF"
+
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51Ok7JLJIzfTZ5jUz575dou7carjQa04kbq6jk8qBZtnYrlIYWxSG4uCsSx8zWJGME3i1JJuB4kFgrweosyxcZpeJ00ZamkGPiF'
+PAYMENT_SUCCESS_URL = 'http://localhost:8000/success/'
+PAYMENT_CANCEL_URL = 'http://localhost:8000/cancel/'
+STRIPE_SECRET_KEY = 'sk_test_51Ok7JLJIzfTZ5jUzQ2CAnYZbIt1WaJikG2TAYJY6SEqqLc2GAJ2TDUbzW3EgSHT9IWEZeXFkTICb7YaeMpZa8UII00Dqet4P7Q'

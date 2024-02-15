@@ -1,10 +1,14 @@
 import django.utils.timezone
+import stripe
 from django.shortcuts import redirect
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
 from django.views import View
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 
+from sklep import settings
 from .models import Product, Card, Opinion, Promo_code
 from .forms import OpinionForm
 
@@ -66,9 +70,8 @@ class CardView(View):
 
             return redirect('checkout')
         else:
-            cardid = request.session['card']
+            card = Card.objects.create(user=request.user)
             product = Product.objects.get(id=item_id)
-            card = Card.objects.get(id=cardid)
             card.product.add(product)
             card.save()
             request.session['card'] = card.id
@@ -128,14 +131,15 @@ class Checkout(View):
 
 
 # TODO: Ogaraniecie checkout
+
+
 def Billing(request):
     card = Card.objects.get(id=request.session['card'])
-    #Ogarnac jak ktos nie ma konta
     user = request.user
     card.first_name = request.POST.get('first_name')
     card.last_name = request.POST.get('last_name')
     card.email = request.POST.get('email')
-    card.date = django.utils.timezone.now()
+    card.date = timezone.now()  # Użyj timezone.now() zamiast django.utils.timezone.now()
     card.phone_number = request.POST.get('phone_number')
     card.postal_code = request.POST.get('postal_code')
     card.city = request.POST.get('city')
@@ -144,12 +148,44 @@ def Billing(request):
     card.save()
     card.make_order()
 
+    # Pobierz wszystkie produkty z karty
+    products_on_card = card.product.all()
 
-    #Todo:  WERYFIKACJA PLATNOSCI
+    line_items = []
+    for product in products_on_card:
+        line_items.append({
+            'price_data': {
+                'currency': 'pln',
+                'product_data': {
+                    'name': product.title,
 
-    return redirect('main_page')
+                },
+                'unit_amount': int(product.price * 100),
+            },
+            'quantity': 1,
+        })
 
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+
+    checkout_session = stripe.checkout.Session.create(
+        payment_method_types=["card"],
+        line_items=line_items,
+        mode="payment",
+        success_url=settings.PAYMENT_SUCCESS_URL,
+        cancel_url=settings.PAYMENT_CANCEL_URL,
+    )
+
+    # Zwróć ID sesji płatności jako odpowiedź
+    curl = checkout_session.url
+    return redirect(curl)
 
 # TODO: dodanie live search
 def live_search(request):
     pass
+
+def success(request):
+    #Todo: usun z sesji card, ustaw card jako order
+    return HttpResponse('Success')
+
+def cancel(request):
+    return HttpResponse('Cancel')
