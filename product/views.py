@@ -61,7 +61,7 @@ class CardView(View):
     def post(self, request, item_id):
         # Sprawdzenie, czy klucz 'card' istnieje w sesji
         if 'card' in request.session:
-            card = Card.objects.create(user=request.user)
+            card = Card.objects.get(user=request.user)
             product = Product.objects.get(id=item_id)
             card.product.add(product)
             card.price += product.price
