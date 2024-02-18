@@ -33,13 +33,18 @@ class AdminPanelView(View):
         product_form = AddProductForm()
         promo_code_form = AddpromoCodeForm()
 
+
+        #show not shipped orders
+        not_shipped_orders = Card.objects.filter(is_shipped=False,is_order=True)
+
         context = {
             'orders_count': orders_count,
             'users_count': users_count,
             'revenue': total_revenue,
             'products_in_stock': products_in_stock,
             'product_form': product_form,
-            'promo_code_form': promo_code_form
+            'promo_code_form': promo_code_form,
+            'not_shipped_orders': not_shipped_orders,
         }
         return render(request, 'adminpanel/main.html', context=context)
 

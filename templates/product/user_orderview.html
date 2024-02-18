@@ -1,10 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+    <div class="container">
+         <h1 class="mt-4">Zamowienia</h1>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nazwa</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Stan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr>
+
+                                    <td>{{ order.user.email }}</td>
+                                    <td>{{ order.date }}</td>
+                                    {% if order.is_shipped %}
+                                        <td>Wyslano</td>
+                                    {% else %}
+                                        <td>Oczekiwanie na wysylke</td>
+                                    {% endif %}
+
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+     </div>
+
+{% endblock %}

@@ -11,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from sklep import settings
 from .models import Product, Card, Opinion, Promo_code
-from .forms import OpinionForm
-
+from .forms import OpinionForm, AccountForm
+from users.models import User
 
 # Create your views here.
 class MainView(View):
@@ -29,7 +29,7 @@ class MainView(View):
 
 
 class ProductView(View):
-    def get(self, request, product_id):  # product_id zostaje jako argument URL
+    def get(self, request, product_id): # product_id to zmienna z urls.py
         product = Product.objects.get(id=product_id)
         context = {
             'product': product,
@@ -130,7 +130,40 @@ class Checkout(View):
         else:
             return HttpResponse('Invalid promo code', status=400)
 
+class UserOrders(View):
+    def get(self,request):
+        orders = Card.objects.filter(user=request.user)
 
+        context = {
+            'orders': orders
+        }
+
+        return render(request, 'product/user_orderview.html', context=context)
+
+
+class UserAccount(View):
+    def get(self,request):
+        account = request.user
+        form = AccountForm(instance=account)
+
+        context = {
+            'user': account,
+            'form': form,
+        }
+
+        return render(request, 'product/user_profile.html', context=context)
+
+
+    def post(self,request):
+        account = request.user
+        form = AccountForm(request.POST, instance=account)
+
+        if form.is_valid():
+            form.save()
+            return redirect('my_account')
+        else:
+            print(form.errors)
+            return redirect('my_account')
 def Billing(request):
     card = Card.objects.get(id=request.session['card'])
     user = request.user
@@ -179,12 +212,9 @@ def Billing(request):
 
 def live_search(request):
     query = request.GET.get('query', '')
-    # Find products by title that contain the query string
     products = Product.objects.filter(title__icontains=query)
-    # Get titles from the products queryset
     product_titles = list(products.values_list('title', flat=True))
 
-    # Return JSON response with list of product titles
     return JsonResponse({'results': product_titles})
 def success(request):
     card = Card.objects.get(id=request.session['card'])
@@ -195,4 +225,4 @@ def success(request):
     return HttpResponse('Success')
 
 def cancel(request):
-    return HttpResponse('Cancel')
+    return redirect('checkout')
