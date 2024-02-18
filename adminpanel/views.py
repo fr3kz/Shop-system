@@ -66,7 +66,7 @@ class AddProductView(View):
     def get(self, request):
         product_form = AddProductForm()
         context = {
-            'product_form': product_form,
+            'form': product_form,
         }
         return render(request, 'adminpanel/addproduct.html', context=context)
 
@@ -83,7 +83,7 @@ class AddPromoCodeView(View):
     def get(self, request):
         promo_code_form = AddpromoCodeForm()
         context = {
-            'promo_code_form': promo_code_form
+            'form': promo_code_form
         }
 
         return render(request, 'adminpanel/addpromocode.html', context=context)

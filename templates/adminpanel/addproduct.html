@@ -7,23 +7,8 @@
         <div class="col-md-6">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="form-group">
-                    <label for="id_name">Nazwa produktu:</label>
-                    {{ product_form.name }}
-                </div>
-                <div class="form-group">
-                    <label for="id_description">Opis:</label>
-                    {{ product_form.description }}
-                </div>
-                <div class="form-group">
-                    <label for="id_price">Cena:</label>
-                    {{ product_form.price }}
-                </div>
-                <div class="form-group">
-                    <label for="id_image">Obrazek:</label>
-                    {{ product_form.image }}
-                </div>
-                <button type="submit" class="btn btn-primary">Dodaj produkt</button>
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Zapisz </button>
             </form>
         </div>
     </div>

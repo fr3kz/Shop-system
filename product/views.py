@@ -218,7 +218,7 @@ def Billing(request):
 def live_search(request):
     query = request.GET.get('query', '')
     products = Product.objects.filter(title__icontains=query)
-    product_titles = list(products.values_list('title', flat=True))
+    product_titles = list(products.values_list('title','id'))
 
     return JsonResponse({'results': product_titles})
 
