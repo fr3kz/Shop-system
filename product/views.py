@@ -130,9 +130,6 @@ class Checkout(View):
             return HttpResponse('Invalid promo code', status=400)
 
 
-# TODO: Ogaraniecie checkout
-
-
 def Billing(request):
     card = Card.objects.get(id=request.session['card'])
     user = request.user
@@ -146,7 +143,7 @@ def Billing(request):
     card.street = request.POST.get('street')
     card.user = user
     card.save()
-    card.make_order()
+
 
     # Pobierz wszystkie produkty z karty
     products_on_card = card.product.all()
@@ -184,7 +181,11 @@ def live_search(request):
     pass
 
 def success(request):
-    #Todo: usun z sesji card, ustaw card jako order
+    card = Card.objects.get(id=request.session['card'])
+    card.make_order()
+
+    del request.session['card']
+
     return HttpResponse('Success')
 
 def cancel(request):
