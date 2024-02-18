@@ -3,7 +3,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Perfumeria{% endblock %}</title>
     <link rel="icon" type="image/png" href="https://sklepsativa.pl/userdata/public/assets/Obrazki/esteban-lopez-t9jQie6cUhg-unsplash.jpg">
 
@@ -73,6 +73,16 @@
 <!-- Bootstrap JS and any additional scripts -->
  <script src="https://js.stripe.com/v3/"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-9sJYEwkiT4kOn7kguP8oTKtI6++zUsr+hJlF4KS4yCU1PbQ5VtJ/VIJzvYkhCpYf" crossorigin="anonymous"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var navbarToggler = document.querySelector(".navbar-toggler");
+    var navbarNav = document.querySelector(".navbar-nav");
+
+    navbarToggler.addEventListener("click", function() {
+      navbarNav.classList.toggle("show");
+    });
+  });
+</script>
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>
