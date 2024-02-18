@@ -16,7 +16,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100;0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
 
-
     {% block extra_head %}{% endblock %}
 </head>
 <body>
@@ -51,16 +50,14 @@
           <a class="nav-link" href="{% url 'checkout' %}">Koszyk</a>
         </li>
         {%  endif%}
-
-           
-        <!-- Add more nav items as needed -->
       </ul>
     </div>
   </div>
 </nav>
 
-    {% block content %}
-    {% endblock %}
+{% block content %}
+{% endblock %}
+
 <footer class="footer py-3 bg-light">
     <div class="container text-center">
         <span class="text-muted">Perfumeria</span>
@@ -70,8 +67,8 @@
     .footer {
         width: 100%;
         flex-shrink: 0;  /* Nie zmniejsza stopki w przypadku małej zawartości */
-    }</style>
-
+    }
+</style>
 
 <!-- Bootstrap JS and any additional scripts -->
  <script src="https://js.stripe.com/v3/"></script>
