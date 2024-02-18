@@ -1,7 +1,8 @@
 import django.utils.timezone
 import stripe
+from django.core.serializers import serialize
 from django.shortcuts import redirect
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.views import View
@@ -176,10 +177,15 @@ def Billing(request):
     curl = checkout_session.url
     return redirect(curl)
 
-# TODO: dodanie live search
 def live_search(request):
-    pass
+    query = request.GET.get('query', '')
+    # Find products by title that contain the query string
+    products = Product.objects.filter(title__icontains=query)
+    # Get titles from the products queryset
+    product_titles = list(products.values_list('title', flat=True))
 
+    # Return JSON response with list of product titles
+    return JsonResponse({'results': product_titles})
 def success(request):
     card = Card.objects.get(id=request.session['card'])
     card.make_order()

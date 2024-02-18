@@ -35,17 +35,15 @@
 <div style="margin-top: 150px;"></div>
 
 <div class="container mt-5">
- <div class="row mt-3">
+    <div class="row mt-3">
         <div class="col">
             <h2>Wyszukaj</h2>
-            <!-- Formularz wyszukiwania -->
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Search Perfumes" name="query">
-                    <button class="btn btn-outline-secondary" type="submit">Search</button>
-                </div>
-            </form>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search Perfumes" name="query" id="search-input">
+            </div>
         </div>
     </div>
+    <div id="search-results"></div>
 </div>
 
 
@@ -72,6 +70,37 @@
         </div>
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('#search-input').on('input', function(){
+            var query = $(this).val();
+            $.ajax({
+                type: 'GET',
+                url: '/live-search/',
+                data: {
+                    'query': query
+                },
+                success: function(response){
+                    // Clear previous search results
+                    $('#search-results').empty();
+                    // Check if there are any results
+                    if (response.results.length > 0) {
+                        // Iterate over the list of product titles and create HTML elements to display them
+                        $.each(response.results, function(index, title){
+                            $('#search-results').append('<p><a href="{% url "product_detail" index %}">' + title + '</a></p>');
+                        });
+                    } else {
+                        // If no results, display a message
+                        $('#search-results').text('No results found.');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+
 
 <!-- Stylowanie -->
 <style>
