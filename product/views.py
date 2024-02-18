@@ -1,10 +1,12 @@
 import django.utils.timezone
 import stripe
+from django.contrib.auth.decorators import login_required
 from django.core.serializers import serialize
 from django.shortcuts import redirect
 from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
@@ -13,6 +15,7 @@ from sklep import settings
 from .models import Product, Card, Opinion, Promo_code
 from .forms import OpinionForm, AccountForm
 from users.models import User
+
 
 # Create your views here.
 class MainView(View):
@@ -29,7 +32,7 @@ class MainView(View):
 
 
 class ProductView(View):
-    def get(self, request, product_id): # product_id to zmienna z urls.py
+    def get(self, request, product_id):  # product_id to zmienna z urls.py
         product = Product.objects.get(id=product_id)
         context = {
             'product': product,
@@ -54,8 +57,8 @@ class Review(View):
             return JsonResponse({'message': form.errors})
 
 
+@method_decorator(login_required(login_url='/login/'), name='dispatch')
 class CardView(View):
-
     def get(self, request, item_id):
         return redirect('checkout')
 
@@ -130,8 +133,9 @@ class Checkout(View):
         else:
             return HttpResponse('Invalid promo code', status=400)
 
+
 class UserOrders(View):
-    def get(self,request):
+    def get(self, request):
         orders = Card.objects.filter(user=request.user)
 
         context = {
@@ -142,7 +146,7 @@ class UserOrders(View):
 
 
 class UserAccount(View):
-    def get(self,request):
+    def get(self, request):
         account = request.user
         form = AccountForm(instance=account)
 
@@ -153,8 +157,7 @@ class UserAccount(View):
 
         return render(request, 'product/user_profile.html', context=context)
 
-
-    def post(self,request):
+    def post(self, request):
         account = request.user
         form = AccountForm(request.POST, instance=account)
 
@@ -164,6 +167,8 @@ class UserAccount(View):
         else:
             print(form.errors)
             return redirect('my_account')
+
+
 def Billing(request):
     card = Card.objects.get(id=request.session['card'])
     user = request.user
@@ -177,7 +182,6 @@ def Billing(request):
     card.street = request.POST.get('street')
     card.user = user
     card.save()
-
 
     # Pobierz wszystkie produkty z karty
     products_on_card = card.product.all()
@@ -210,12 +214,15 @@ def Billing(request):
     curl = checkout_session.url
     return redirect(curl)
 
+
 def live_search(request):
     query = request.GET.get('query', '')
     products = Product.objects.filter(title__icontains=query)
     product_titles = list(products.values_list('title', flat=True))
 
     return JsonResponse({'results': product_titles})
+
+
 def success(request):
     card = Card.objects.get(id=request.session['card'])
     card.make_order()
@@ -223,6 +230,7 @@ def success(request):
     del request.session['card']
 
     return HttpResponse('Success')
+
 
 def cancel(request):
     return redirect('checkout')

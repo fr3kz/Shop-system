@@ -29,26 +29,28 @@ class LoginView(View):
         return render(request, 'users/loginpage.html', {'form': form})
 
 class RegisterView(View):
-
     def get(self, request):
         form = RegisterForm()
-        return render(request, 'users/loginpage.html', {'form': form})
+        return render(request, 'users/registerpage.html', {'form': form})
+
     def post(self, request):
         form = RegisterForm(request.POST)
+        if form.is_valid():
+            # Pobierz dane z formularza
+            username = form.cleaned_data['email']  # lub inny sposób uzyskania nazwy użytkownika
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password1']
 
-        if not form.is_valid():
-            return
-        form.clean_username()
-        user = User.objects.create_user(username=form.data.get('username'),
-                                        password=form.data.get('password'),
-                                        first_name=form.data.get('first_name'),
-                                        last_name=form.data.get('last_name'),
-                                        address=form.data.get('address'),
-                                        phone_number=form.data.get('phone_number'))
+            # Utwórz użytkownika
+            user = User.objects.create_user(username=username, email=email, password=password)
+            user.save()
 
-        user = authenticate(username=user.username, password=user.password)
-        if user is not None:
+            # Autentykuj i zaloguj użytkownika
+            user = authenticate(request, username=username, password=password)
             login(request, user)
-            return render(request, 'product/main.html')
+
+            return redirect('main_page')
         else:
-            return render(request, 'users/loginpage.html', {'form': form})
+            print(form.errors)
+
+        return render(request, 'users/registerpage.html', {'form': form})
