@@ -234,3 +234,6 @@ def success(request):
 
 def cancel(request):
     return redirect('checkout')
+
+
+#Todo: Poprawic navbar
