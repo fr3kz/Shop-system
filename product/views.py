@@ -77,6 +77,7 @@ class CardView(View):
             card = Card.objects.create(user=request.user)
             product = Product.objects.get(id=item_id)
             card.product.add(product)
+            card.price += product.price
             card.save()
             request.session['card'] = card.id
 
