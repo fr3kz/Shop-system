@@ -229,8 +229,12 @@ def success(request):
 
     del request.session['card']
 
-    return HttpResponse('Success')
+    return redirect('afterpage')
 
 
 def cancel(request):
     return redirect('checkout')
+
+
+def AfterPage(request):
+    return render(request, 'product/success.html')
