@@ -135,7 +135,8 @@ class ProductEditView(View):
         product = Product.objects.get(id=product_id)
         form = AddProductForm(instance=product)
         context = {
-            'form': form
+            'form': form,
+            'product': product,
         }
         return render(request, 'adminpanel/editproduct.html', context=context)
 
