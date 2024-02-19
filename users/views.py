@@ -41,7 +41,7 @@ class RegisterView(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password1']
 
-            user = RegisterForm.save(commit=False)
+            user = form.save(commit=False)
             user.username = email.toLowerCase()
             user.save()
             login(request, user)
