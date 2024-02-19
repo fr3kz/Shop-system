@@ -41,12 +41,9 @@ class RegisterView(View):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password1']
 
-            # Utwórz użytkownika
-            user = User.objects.create_user(username=username, email=email, password=password)
+            user = RegisterForm.save(commit=False)
+            user.username = email.toLowerCase()
             user.save()
-
-            # Autentykuj i zaloguj użytkownika
-            user = authenticate(request, username=username, password=password)
             login(request, user)
 
             return redirect('main_page')
