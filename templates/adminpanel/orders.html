@@ -29,7 +29,7 @@
 
                                     <td>
                                         {% if order.is_delivered %}
-                                                <a href="{% url 'mark_order_as_shipped' order.id %}" class="btn btn-info">Oznacz dostarczone</a>
+                                                <a href="{% url 'mark_order_as_delivered' order.id %}" class="btn btn-info">Oznacz dostarczone</a>
 
                                         {%  else %}
                                                 <a href="{% url 'mark_order_as_shipped' order.id %}" class="btn btn-info">Oznacz wyslane</a>
