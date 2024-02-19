@@ -1,7 +1,7 @@
 # Projekt Sklepu Django
 
 To jest projekt sklepu internetowego zbudowany w oparciu o Django. Projekt zawiera funkcje takie jak zarządzanie produktami, opiniami klientów, kodami promocyjnymi oraz integrację z bramką płatności Stripe. Dodatkowo, projekt zawiera panel administratora do zarządzania sklepem.
-
+https://orca-app-tiz3h.ondigitalocean.app
 ## Wymagania
 
 Aby uruchomić ten projekt, potrzebujesz zainstalowanego środowiska Python oraz kilku zależności Pythona, które można zainstalować za pomocą `pip`. Aby zainstalować wszystkie niezbędne zależności, wykonaj poniższe polecenie:
