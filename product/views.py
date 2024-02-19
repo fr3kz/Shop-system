@@ -206,8 +206,8 @@ def Billing(request):
         payment_method_types=["card"],
         line_items=line_items,
         mode="payment",
-        success_url=settings.PAYMENT_SUCCESS_URL,
-        cancel_url=settings.PAYMENT_CANCEL_URL,
+        success_url="https://orca-app-tiz3h.ondigitalocean.app/success/",
+        cancel_url="https://orca-app-tiz3h.ondigitalocean.app/cancel/",
     )
 
     # Zwróć ID sesji płatności jako odpowiedź
