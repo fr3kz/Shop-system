@@ -24,6 +24,8 @@ class MainView(View):
     context = {
         'products': products,
         'fproducts': fproducts,
+        'men_products': Product.objects.filter(category__title='Men'),
+        'woman_products': Product.objects.filter(category__title='Women'),
 
     }
 

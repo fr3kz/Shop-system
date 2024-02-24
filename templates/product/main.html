@@ -83,7 +83,7 @@
 <div class="container p-5" >
     <h1 class="font-weight-bold">Perfumy dla niego</h1>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for product in products %}
+      {% for product in men_products %}
             <div class="col">
             <div class="card h-100">
               <img src="{{ product.image.url }}" style="height: 25vw;object-fit: contain;" alt="..." >
@@ -107,7 +107,7 @@
 <div class="container p-5">
     <h1 class="font-weight-bold">Perfumy dla niej</h1>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for product in products %}
+      {% for product in woman_products %}
             <div class="col">
             <div class="card h-100">
               <img src="{{ product.image.url }}" style="height: 25vw;object-fit: contain;" alt="..." >

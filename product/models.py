@@ -85,3 +85,11 @@ class Promo_code(models.Model):
             return True
         else:
             return False
+
+
+class Category(models.Model):
+    title = models.CharField(max_length=50, default="")
+    products = models.ManyToManyField(to=Product, default="", blank=True)
+
+    def __str__(self):
+        return self.title
