@@ -36,11 +36,11 @@ class MainView(View):
 class ProductView(View):
     def get(self, request, product_id):
         product = Product.objects.get(id=product_id)
-        product_options = product.perfumeoptions_set.all()
+        perfume_options = product.perfume_options.all()
         context = {
             'product': product,
             'opinions': product.opinion_set.all(),
-            'product_options': product_options,
+            'product_options': perfume_options,
         }
         return render(request, 'product/product_detail.html', context=context)
 

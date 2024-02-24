@@ -8,7 +8,11 @@
             <form method="post" action="{% url 'addproduct' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Zapisz </button>
+                {{ formset.management_form }}
+                <table>
+                    {{ formset.as_table }}
+                </table>
+                <button type="submit" class="btn btn-primary">Zapisz</button>
             </form>
         </div>
     </div>

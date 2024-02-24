@@ -3,14 +3,12 @@ from django.db import models
 from users.models import User
 import datetime
 
-
-# Create your models here.
 class Product(models.Model):
     title = models.CharField(max_length=50)
     price = models.IntegerField()
     image = models.ImageField(upload_to="images/")
     description = models.TextField()
-    is_featured = models.BooleanField(default=False)  # Dodane pole
+    is_featured = models.BooleanField(default=False)
     amount = models.IntegerField(default=1)
     is_on = models.BooleanField(default=True, blank=True)
 
@@ -52,16 +50,13 @@ class Card(models.Model):
     is_shipped = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
 
-
     def __str__(self):
         return f"Zamowienie nr {self.id} - {self.user.last_name} "
 
     def get_total_price(self, products):
         self.price = 0
-        # check for discount
         for product in products:
             self.price += product.price
-
         return self.price
 
     def make_order(self):
@@ -95,8 +90,10 @@ class Category(models.Model):
         return self.title
 
 
-
 class PerfumeOptions(models.Model):
-    amount = models.IntegerField(default=1) #in mililitres
+    amount = models.IntegerField(default=1)  # in mililitres
     price = models.IntegerField(default=0)
-    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, default="", blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='perfume_options', null=True)
+
+    def __str__(self):
+        return f"{self.amount} ml - {self.price} zł"

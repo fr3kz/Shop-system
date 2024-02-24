@@ -1,6 +1,6 @@
 from django.forms import forms, ModelForm
 
-from .models import Product, Opinion, Discounts
+from .models import Product, Opinion, Discounts,PerfumeOptions
 from users.models import User
 
 class OpinionForm(forms.Form):
@@ -14,3 +14,7 @@ class AccountForm(ModelForm):
         model = User
         fields = ['email', 'first_name', 'last_name', 'address', 'phone_number']
 
+class PerfumeOptionsForm(ModelForm):
+    class Meta:
+        model = PerfumeOptions
+        fields = ['amount', 'price']

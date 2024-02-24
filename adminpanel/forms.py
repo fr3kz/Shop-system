@@ -3,7 +3,7 @@ from typing import Any
 from django.contrib.auth import authenticate
 from django.forms import forms, ModelForm
 from users.models import User
-from product.models import Product, Promo_code
+from product.models import Product, Promo_code,PerfumeOptions
 
 
 class Loginform(forms.Form):
@@ -29,3 +29,9 @@ class AddpromoCodeForm(ModelForm):
     class Meta:
         model = Promo_code
         fields = "__all__"
+
+
+class PerfumeOptionsForm(ModelForm):
+    class Meta:
+        model = PerfumeOptions
+        fields = ['amount', 'price']
