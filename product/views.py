@@ -24,8 +24,8 @@ class MainView(View):
     context = {
         'products': products,
         'fproducts': fproducts,
-        'men_products': Product.objects.filter(category__title='Men'),
-        'woman_products': Product.objects.filter(category__title='Women'),
+        'men_products': Product.objects.filter(category__title='Men', is_on=True),
+        'woman_products': Product.objects.filter(category__title='Women', is_on=True),
 
     }
 
@@ -34,11 +34,13 @@ class MainView(View):
 
 
 class ProductView(View):
-    def get(self, request, product_id):  # product_id to zmienna z urls.py
+    def get(self, request, product_id):
         product = Product.objects.get(id=product_id)
+        product_options = product.perfumeoptions_set.all()
         context = {
             'product': product,
-            'opinions': product.opinion_set.all()
+            'opinions': product.opinion_set.all(),
+            'product_options': product_options,
         }
         return render(request, 'product/product_detail.html', context=context)
 

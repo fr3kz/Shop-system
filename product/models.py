@@ -93,3 +93,10 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
+
+
+
+class PerfumeOptions(models.Model):
+    amount = models.IntegerField(default=1) #in mililitres
+    price = models.IntegerField(default=0)
+    product = models.ForeignKey(to=Product, on_delete=models.CASCADE, default="", blank=True)
