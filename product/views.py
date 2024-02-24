@@ -65,7 +65,8 @@ class CardView(View):
     def post(self, request, item_id):
         # Sprawdzenie, czy klucz 'card' istnieje w sesji
         if 'card' in request.session:
-            card = Card.objects.get(user=request.user)
+            #Todo: sprawdzic czy dziala filter zamiast get
+            card = Card.objects.filter(user=request.user)
             product = Product.objects.get(id=item_id)
             card.product.add(product)
             card.price += product.price
@@ -236,6 +237,8 @@ def success(request):
 def cancel(request):
     return redirect('checkout')
 
-
 def AfterPage(request):
     return render(request, 'product/success.html')
+
+
+#Todo: add implemetation to delete sessions card after x hours/days

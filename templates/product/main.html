@@ -1,24 +1,49 @@
 {% extends 'base.html' %}
+
 {% block content %}
 {% load static %}
+{% include 'utilities/navbar.html' %}
 
-<!-- Tło zajmujące 100% szerokości ekranu i 3/4 wysokości -->
-<div class="background-container">
-    <img src='{% static 'images/collection-item1.jpg' %}' class="full-width-img" alt="Perfume">
+<!-- Zdjecia -->
+<div class="container-fluid p-0">
+    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" style="height: 75vh;">
+            <div class="carousel-item active">
+                <img src="{% static 'images/collection-item1.jpg' %}" class="d-block w-100 h-100" alt="..."
+                    style="object-fit: contain;">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/collection-item2.jpg' %}" class="d-block w-100 h-100" alt="..."
+                    style="object-fit: contain;">
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'images/collection-item3.jpg' %}" class="d-block w-100 h-100" alt="..."
+                    style="object-fit: contain;">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
 </div>
 
-<div class="container mt-5">
-    <div class="row mt-3">
-        <div class="col">
-            <h2>Polecane Perfumy</h2>
-            <!-- Perfumy w kontenerach o tych samych wymiarach zewnętrznych -->
-          <div class="container mt-5">
+<!-- Polecane perfumy --->
+<div class="container-fluid p-0" style="background-color: #f2f2f2">
+<div class="container p-5" >
+    <h1>Polecane perfumki</h1>
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for product in fproducts %}
+         {% for product in fproducts %}
         <div class="col">
-            <div class="card h-100">
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
-                <div class="card-body">
+            <div class="card h-100 " >
+              <img src="{{ product.image.url }}" class="card-img-top" style="height: 25vw;object-fit: contain;" alt="..." >
+             <div class="card-body">
 
                     <h5 class="card-title">{{ product.title }}</h5>
                     <p class="card-text">{{ product.description }}</p>
@@ -27,130 +52,82 @@
                     <p class="card-text">Price: {{ product.price }} PLN</p>
                     <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Details</a>
                 </div>
-            </div>
-        </div>
+    </div>
+  </div>
         {% endfor %}
-    </div>
 </div>
 
 
 
+</div>
+
+</div>
+
+<!-- Blok informacyjny --->
+<div class="container-fluid " style="background-color: #333333">
+    <div class="row g-3 text-center">
+        <div class="col p-5">
+            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail " style="width: auto; height: 195px;"alt="...">
+            <p style="color: gold">Darmowa wysylka</p>
+        </div>
+        <div class="col p-5">
+            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail " style="width: auto; height: 195px;"alt="...">
+            <p style="color: mediumseagreen">Darmowa wysylka</p>
+        </div>
+         <div class="col p-5">
+            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail " style="width: auto; height: 195px;"alt="...">
+            <p style="color: rosybrown">Darmowa wysylka</p>
         </div>
     </div>
 </div>
 
-<div class="container mt-5">
-    <div class="row mt-3">
-        <div class="col">
-            <h2>Wyszukaj</h2>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Search Perfumes" name="query" id="search-input">
-            </div>
-        </div>
-    </div>
-    <div id="search-results"></div>
-</div>
+<!-- Perfumy dla niego --->
+<div class="container-fluid" style="background-color: #f2f2f2">
+<div class="container p-5" >
+    <h1>Perfumy dla niego</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% for product in products %}
+            <div class="col">
+            <div class="card h-100">
+              <img src="{{ product.image.url }}" style="height: 25vw;object-fit: contain;" alt="..." >
+             <div class="card-body">
 
-
-<div class="container mt-5">
-    <div class="row mt-3">
-        <div class="col">
-            <h2>Wszystkie Perfumy</h2>
-            <!-- Perfumy w kontenerach o tych samych wymiarach zewnętrznych -->
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                {% for product in products %}
-                <div class="col">
-                    <div class="card perfume-container2">
-                        <img src="{{ product.image.url }}" class="card-img-top product-image" alt="{{ product.name }}">
-                        <div class="card-body">
-                           <h5 class="card-title">{{ product.title }}</h5>
-                            <p class="card-text">{{ product.description }}</p>
-                            <p class="card-text">Price: {{ product.price }}</p>
-                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Details</a>
-                        </div>
-                    </div>
+                    <h5 class="card-title">{{ product.title }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
                 </div>
-                {% endfor %}
-            </div>
-        </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <p class="card-text">Price: {{ product.price }} PLN</p>
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Details</a>
+                </div>
     </div>
+  </div>
+        {% endfor %}
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function(){
-        $('#search-input').on('input', function(){
-            var query = $(this).val();
-            $.ajax({
-                type: 'GET',
-                url: '/live-search/',
-                data: {
-                    'query': query
-                },
-                success: function(response){
-                    // Clear previous search results
-                    $('#search-results').empty();
-                    // Check if there are any results
-                    if (response.results.length > 0) {
-                        // Iterate over the list of product titles and create HTML elements to display them
-                        $.each(response.results, function(index, product){
-                            $('#search-results').append('<p><a href="{% url "product_detail" 0 %}">'.replace('0', product[1]) + product[0] + '</a></p>');
-                        });
-                    } else {
-                        // If no results, display a message
-                        $('#search-results').text('No results found.');
-                    }
-                }
-            });
-        });
-    });
-</script>
+</div>
 
-<!-- Stylowanie -->
-<style>
-    .background-container {
-        width: 100%;
-        height: 75vh; /* 75% wysokości ekranu */
-        overflow: hidden; /* Zapobiega przewijaniu w pionie */
-    }
+</div>
+    <!--    Perfumy dla niej --->
+<div class="container p-5">
+    <h1>Perfumy dla niej</h1>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      {% for product in products %}
+            <div class="col">
+            <div class="card h-100">
+              <img src="{{ product.image.url }}" style="height: 25vw;object-fit: contain;" alt="..." >
+             <div class="card-body">
 
-    .full-width-img {
-        width: 100%;
-        height: auto;
-        object-fit: cover; /* Zapewnia, że obraz zostanie zmniejszony, aby wypełnić kontener */
-    }
+                    <h5 class="card-title">{{ product.title }}</h5>
+                    <p class="card-text">{{ product.description }}</p>
+                </div>
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <p class="card-text">Price: {{ product.price }} PLN</p>
+                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Details</a>
+                </div>
+    </div>
+  </div>
+        {% endfor %}
+</div>
+</div>
 
-    .perfume-container {
-        width: 100%; /* Szerokość każdego pojemnika */
-        height: 300px; /* Stała wysokość dla każdego kontenera */
-        margin-bottom: 20px;
-        margin-top: 50px;/* Margines między kontenerami */
-    }
-
-    .perfume-container2 {
-        width: 100%; /* Szerokość każdego pojemnika */
-        height: 350px; /* Stała wysokość dla każdego kontenera */
-        margin-bottom: 200px;
-        margin-top: 100px;/* Margines między kontenerami */
-    }
-    .product-image {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-}
-
-
-    .card-img-top {
-        width: 100%;
-        height: 100%; /* Obraz wypełnia całą wysokość kontenera */
-        object-fit: cover; /* Zapewnia, że obraz zostanie zmniejszony, aby wypełnić kontener */
-    }
-
-    .card-body {
-        margin-top: auto; /* Umieść cenę i przycisk na samym dole */
-    }
-
-</style>
 
 {% endblock %}
