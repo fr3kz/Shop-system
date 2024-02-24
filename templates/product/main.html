@@ -5,9 +5,9 @@
 {% include 'utilities/navbar.html' %}
 
 <!-- Zdjecia -->
-<div class="container-fluid p-0">
-    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner" style="height: 100vh;">
+<div class="container-fluid p-0 position-relative" style="height: 75vh; overflow: hidden;">
+    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel" style="height:100%;">
+        <div class="carousel-inner">
             <div class="carousel-item active">
                 <img src="{% static 'images/collection-item1.jpg' %}" class="d-block w-100 h-100" alt="..."
                     style="object-fit: contain;">
@@ -33,16 +33,15 @@
         </button>
     </div>
 </div>
-
 <!-- Polecane perfumy --->
 <div class="container-fluid p-0" style="background-color: #f2f2f2">
 <div class="container p-5" >
-    <h1>Polecane perfumki</h1>
+    <p class="h1">Polecane Perfumy</p>
     <div class="row row-cols-1 row-cols-md-3 g-4">
          {% for product in fproducts %}
         <div class="col">
             <div class="card h-100 " >
-              <img src="{{ product.image.url }}" class="card-img-top" style="height: 25vw;object-fit: contain;" alt="..." >
+              <img src="{{ product.image.url }}" class="card-img-top" style="height: 30vw;object-fit: contain;" alt="..." >
              <div class="card-body">
 
                     <h5 class="card-title">{{ product.title }}</h5>
@@ -64,18 +63,18 @@
 </div>
 
 <!-- Blok informacyjny --->
-<div class="container-fluid " style="background-color: #333333">
-    <div class="row g-3 text-center">
-        <div class="col p-5">
-            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail " style="width: auto; height: 195px;"alt="...">
+<div class="container-fluid" style="background-color: #333333">
+    <div class="row align-items-start text-center">
+        <div class="col-12 col-md p-5"> <!-- Dodano klasę col-12 -->
+            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail" style="width: auto; height: 195px;" alt="...">
             <p style="color: gold">Darmowa wysylka</p>
         </div>
-        <div class="col p-5">
-            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail " style="width: auto; height: 195px;"alt="...">
+        <div class="col-12 col-md p-5"> <!-- Dodano klasę col-12 -->
+            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail" style="width: auto; height: 195px;" alt="...">
             <p style="color: mediumseagreen">Darmowa wysylka</p>
         </div>
-         <div class="col p-5">
-            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail " style="width: auto; height: 195px;"alt="...">
+        <div class="col-12 col-md p-5"> <!-- Dodano klasę col-12 -->
+            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail" style="width: auto; height: 195px;" alt="...">
             <p style="color: rosybrown">Darmowa wysylka</p>
         </div>
     </div>
