@@ -12,6 +12,8 @@ class Product(models.Model):
     amount = models.IntegerField(default=1)
     is_on = models.BooleanField(default=True, blank=True)
     stars = models.IntegerField(default=0)
+    rated = models.IntegerField(default=5)
+
 
     def __str__(self):
         return self.title
@@ -25,7 +27,6 @@ class Product(models.Model):
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")
     description = models.TextField(default="")
-    rated = models.IntegerField(default=0)
     product = models.ForeignKey(to=Product, on_delete=models.CASCADE, default="")
 
 
