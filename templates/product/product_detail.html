@@ -7,7 +7,7 @@
     <div class="container" style="margin-top: 15px;">
         <div class="row text-center">
             <div class="col-6">
-                <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.title }}">
+                <img src="{{ product.image.url }}" class="img-fluid" style="height: 450px;" alt="{{ product.title }}">
             </div>
             <div class="col-6">
                 <h2>{{ product.title }}</h2>
@@ -29,37 +29,44 @@
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Dodaj do koszyka</button>
                 </form>
-
-
-                <div class="row">
-                     <h3>Opinie:</h3>
-                                 {% if product.opinion_set.all %}
-                                    {% for opinion in product.opinion_set.all %}
-                                          <div class="col-3">
-                                            <div class="card" style="width: 10rem;">
-                                                <div class="card-body">
-                                                     <p><strong>Autor:</strong> {{ opinion.author.username }}</p>
-                                                    <p><strong>Ocena:</strong> {{ opinion.rated }}</p>
-                                                    <p>{{ opinion.description }}</p>
-                                                </div>
-                                            </div>
-
-                                          </div>
-                                    {% endfor %}
-                                {% else %}
-                                    <p>Brak opinii.</p>
-                                {% endif %}
-
-                </div>
-
-
-
-
+                <img src="{% static 'images/image.png' %}" alt="like" class="img-fluid" style="margin-top: 15px;" >
             </div>
 
         </div>
     </div>
 </div>
 
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <h3>Poznaj opinie na temat tego produktu:</h3>
+            {% if product.opinion_set.all %}
+                {% for opinion in product.opinion_set.all %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Autor: {{ opinion.author.username }}</h5>
+                                <p class="card-text">Ocena:
+                                    {% for i in '01234'|make_list %}
+                                        {% if i|add:'0' < opinion.rated %}
+                                            <i class="bi bi-star-fill"></i>
+                                        {% else %}
+                                            <i class="bi bi-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </p>
+                                <p class="card-text">{{ opinion.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col">
+                    <p>Brak opinii.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
 
 {% endblock %}
