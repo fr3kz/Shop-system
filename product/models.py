@@ -11,6 +11,7 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)
     amount = models.IntegerField(default=1)
     is_on = models.BooleanField(default=True, blank=True)
+    stars = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
