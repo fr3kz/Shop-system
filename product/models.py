@@ -65,6 +65,7 @@ class Card(models.Model):
         self.save()
 
 
+
 class Promo_code(models.Model):
     code = models.CharField(max_length=10, default="")
     discount = models.IntegerField(default=0)
