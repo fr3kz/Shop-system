@@ -74,7 +74,7 @@ class CardView(View):
 
             product_item = CardItem.objects.create(card=card, product=product).save()
 
-            product_item.save()
+
 
             card.price += product.price
             card.save()
@@ -86,7 +86,6 @@ class CardView(View):
             product = Product.objects.get(id=item_id)
 
             product_item = CardItem.objects.create(card=card, product=product).save()
-            product_item.save()
 
             card.price += product_item.product.price
             card.save()
