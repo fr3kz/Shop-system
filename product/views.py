@@ -12,7 +12,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
 from sklep import settings
-from .models import Product, Card, Opinion, Promo_code,CardItem
+from .models import Product, Card, Opinion, Promo_code, CardItem, PerfumeOptions
 from .forms import OpinionForm, AccountForm
 from users.models import User
 
@@ -63,21 +63,24 @@ class Review(View):
 
 @method_decorator(login_required(login_url='/login/'), name='dispatch')
 class CardView(View):
-    def get(self, request, item_id):
-        return redirect('checkout')
-
     def post(self, request, item_id):
-        # Sprawdzenie, czy klucz 'card' istnieje w sesji
         if 'card' in request.session:
             card = Card.objects.filter(user=request.user, is_order=False).first()
             product = Product.objects.get(id=item_id)
 
-            product_item = CardItem.objects.create(card=card, product=product).save()
+            # Uzyskaj wybraną opcję z żądania POST
+            option_id = request.POST.get('option')
+            option = PerfumeOptions.objects.get(id=option_id)
 
+            product_item = CardItem.objects.create(card=card, product=product)
+            product_item.size.add(option)  # Dodaj opcję do pola ManyToManyField
 
-
-            card.price += product.price
+            card.price += option.price
             card.save()
+
+            product_item.price = option.price
+
+            product_item.save()
             request.session['card'] = card.id
 
             return redirect('checkout')
@@ -85,14 +88,19 @@ class CardView(View):
             card = Card.objects.create(user=request.user)
             product = Product.objects.get(id=item_id)
 
-            product_item = CardItem.objects.create(card=card, product=product).save()
+            # Uzyskaj wybraną opcję z żądania POST
+            option_id = request.POST.get('option')
+            option = PerfumeOptions.objects.get(id=option_id)
 
-            card.price += product.price
+            product_item = CardItem.objects.create(card=card, product=product)
+            product_item.size.add(option)  # Dodaj opcję do pola ManyToManyField
+
+            card.price += option.price
             card.save()
             request.session['card'] = card.id
-
+            product_item.price = option.price
+            product_item.save()
             return redirect('checkout')
-
 
 # TODO: Edycja koszyka
 class Checkout(View):
@@ -186,6 +194,8 @@ from django.shortcuts import redirect
 from django.utils import timezone
 from .models import CardItem
 
+from django.db.models import Sum
+
 def Billing(request):
     card = Card.objects.get(id=request.session['card'])
     user = request.user
@@ -201,17 +211,31 @@ def Billing(request):
     card.save()
 
     line_items = []
-    for cart_item in card.carditem_set.all():
 
+    # Pobierz wszystkie elementy koszyka
+    cart_items = CardItem.objects.filter(card=card)
+
+    # Zlicz ilość każdego produktu w koszyku
+    product_quantities = cart_items.values('product__id','product__carditem__price').annotate(total_quantity=Sum('quantity'))
+
+    for product_quantity in product_quantities:
+        product_id = product_quantity['product__id']
+        carditem = CardItem.objects.get(product__id=product_id)
+        total_quantity = product_quantity['total_quantity']
+
+        # Pobierz produkt
+        product = Product.objects.get(id=product_id)
+
+        # Dodaj pozycję do listy zakupów
         line_items.append({
             'price_data': {
                 'currency': 'pln',
                 'product_data': {
-                    'name': cart_item.product.title,
+                    'name': product.title,
                 },
-                'unit_amount': int(cart_item.product.price * 100),
+                'unit_amount': int(carditem.price * 100),
             },
-            'quantity': cart_item.product.amount,
+            'quantity': total_quantity,
         })
 
     stripe.api_key = settings.STRIPE_SECRET_KEY
