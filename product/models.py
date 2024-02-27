@@ -3,6 +3,9 @@ from django.db import models
 from users.models import User
 import datetime
 
+
+
+
 class Product(models.Model):
     title = models.CharField(max_length=50)
     price = models.IntegerField()
@@ -21,6 +24,12 @@ class Product(models.Model):
         self.is_on = False
         self.save()
 
+class PerfumeOptions(models.Model):
+    amount = models.IntegerField(default=1)  # in mililitres
+    price = models.IntegerField(default=0)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='perfume_options', null=True, blank=True)
+    def __str__(self):
+        return f"{self.amount} ml - {self.price} zł"
 
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")
@@ -33,9 +42,19 @@ class Discounts(models.Model):
     discount = models.IntegerField(default=0)
 
 
+class CardItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, default="", blank=True)
+    quantity = models.IntegerField(default=1, blank=True)
+    price = models.IntegerField(default=0, blank=True)
+    card = models.ForeignKey(to='Card', on_delete=models.CASCADE, default="", blank=True)
+    size = models.ManyToManyField(to=PerfumeOptions, default="", blank=True)
+
+
+    def __str__(self):
+        return f"{self.product.title} - {self.quantity} szt. - {self.price} zł"
+
 class Card(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, default="", blank=True)
-    product = models.ManyToManyField(to=Product, default="", blank=True)
     quantity = models.IntegerField(default=1, blank=True)
     price = models.IntegerField(default=0)
     street = models.CharField(max_length=100, default="", blank=True)
@@ -91,10 +110,3 @@ class Category(models.Model):
         return self.title
 
 
-class PerfumeOptions(models.Model):
-    amount = models.IntegerField(default=1)  # in mililitres
-    price = models.IntegerField(default=0)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='perfume_options', null=True)
-
-    def __str__(self):
-        return f"{self.amount} ml - {self.price} zł"

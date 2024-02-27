@@ -13,7 +13,7 @@
                 <p><strong>Opis:</strong> {{ product.description }}</p>
 
                 <!-- Wyświetlanie ceny -->
-                <form action="{% url 'add_to_card' item_id=product.id %}" method="POST">
+                <form action="{% url 'add_to_card' product.id %}" method="POST">
                     {% csrf_token %}
                     <div class="row">
                         <div class="col-12">

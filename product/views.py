@@ -12,7 +12,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
 from sklep import settings
-from .models import Product, Card, Opinion, Promo_code
+from .models import Product, Card, Opinion, Promo_code,CardItem
 from .forms import OpinionForm, AccountForm
 from users.models import User
 
@@ -69,10 +69,13 @@ class CardView(View):
     def post(self, request, item_id):
         # Sprawdzenie, czy klucz 'card' istnieje w sesji
         if 'card' in request.session:
-            #Todo: sprawdzic czy dziala filter zamiast get
-            card = Card.objects.filter(user=request.user)
+            card = Card.objects.filter(user=request.user, is_order=False).first()
             product = Product.objects.get(id=item_id)
-            card.product.add(product)
+
+            product_item = CardItem.objects.create(card=card, product=product).save()
+
+            product_item.save()
+
             card.price += product.price
             card.save()
             request.session['card'] = card.id
@@ -81,8 +84,11 @@ class CardView(View):
         else:
             card = Card.objects.create(user=request.user)
             product = Product.objects.get(id=item_id)
-            card.product.add(product)
-            card.price += product.price
+
+            product_item = CardItem.objects.create(card=card, product=product).save()
+            product_item.save()
+
+            card.price += product_item.product.price
             card.save()
             request.session['card'] = card.id
 
@@ -105,9 +111,11 @@ class Checkout(View):
             if card_promocde:
                 Promocode = Promo_code.objects.get(code=card_promocde)
 
+
+            product_items = CardItem.objects.filter(card=card).all()
             context = {
                 'card_id': cardid,
-                'card_products': card.product.all(),
+                'card_products': product_items,
                 'card_price': total_price,
                 'card_promocode': card_promocde,
                 'promocode': Promocode,
@@ -175,13 +183,17 @@ class UserAccount(View):
             return redirect('my_account')
 
 
+from django.shortcuts import redirect
+from django.utils import timezone
+from .models import CardItem
+
 def Billing(request):
     card = Card.objects.get(id=request.session['card'])
     user = request.user
     card.first_name = request.POST.get('first_name')
     card.last_name = request.POST.get('last_name')
     card.email = request.POST.get('email')
-    card.date = timezone.now()  # Użyj timezone.now() zamiast django.utils.timezone.now()
+    card.date = timezone.now()
     card.phone_number = request.POST.get('phone_number')
     card.postal_code = request.POST.get('postal_code')
     card.city = request.POST.get('city')
@@ -189,21 +201,18 @@ def Billing(request):
     card.user = user
     card.save()
 
-    # Pobierz wszystkie produkty z karty
-    products_on_card = card.product.all()
-
     line_items = []
-    for product in products_on_card:
+    for cart_item in card.carditem_set.all():
+
         line_items.append({
             'price_data': {
                 'currency': 'pln',
                 'product_data': {
-                    'name': product.title,
-
+                    'name': cart_item.product.title,
                 },
-                'unit_amount': int(product.price * 100),
+                'unit_amount': int(cart_item.product.price * 100),
             },
-            'quantity': 1,
+            'quantity': cart_item.product.amount,
         })
 
     stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -216,7 +225,6 @@ def Billing(request):
         cancel_url="https://orca-app-tiz3h.ondigitalocean.app/cancel/",
     )
 
-    # Zwróć ID sesji płatności jako odpowiedź
     curl = checkout_session.url
     return redirect(curl)
 
@@ -245,4 +253,3 @@ def AfterPage(request):
     return render(request, 'product/success.html')
 
 
-#Todo: add implemetation to delete sessions card after x hours/days
