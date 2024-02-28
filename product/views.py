@@ -228,7 +228,7 @@ def Billing(request):
 
     for product_quantity in product_quantities:
         product_id = product_quantity['product__id']
-        carditem = CardItem.objects.get(product__id=product_id, card=card, price=product_quantity['product__carditem__price'])
+        carditem = CardItem.objects.get(product__id=product_id, card=card, price=product_quantity['product__carditem__price'],is_active=True)
         total_quantity = product_quantity['total_quantity']
 
         # Pobierz produkt
@@ -307,7 +307,7 @@ def update_card(request, item_id):
 
         product = Product.objects.get(id=item_id)
 
-        card_item = CardItem.objects.filter(card=card, product=product).all()
+        card_item = CardItem.objects.filter(card=card, product=product,is_active=True).all()
 
 
         new_quantity = int(request.POST.get(f'quantity_{item_id}', 1))
@@ -323,7 +323,7 @@ def update_card(request, item_id):
 
 
 def update_card_price(card):
-    card_items = CardItem.objects.filter(card=card)
+    card_items = CardItem.objects.filter(card=card,is_active=True)
 
     total_price = 0
 
