@@ -27,7 +27,7 @@ class PerfumeOptions(models.Model):
     price = models.IntegerField(default=0)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='perfume_options', null=True, blank=True)
     def __str__(self):
-        return f"{self.amount} ml - {self.price} zł"
+        return f"{self.amount} ml - {self.price} zł {self.product.title}"
 
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")

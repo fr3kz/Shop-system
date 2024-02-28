@@ -72,6 +72,8 @@ class CardView(View):
             option_id = request.POST.get('option')
             option = PerfumeOptions.objects.get(id=option_id)
 
+
+            ##Todo:sprawdzenie czy obiekt jest juz w koszyku
             product_item = CardItem.objects.create(card=card, product=product)
             product_item.size.add(option)  # Dodaj opcję do pola ManyToManyField
 
@@ -108,7 +110,6 @@ class Checkout(View):
 
         if 'card' in request.session:
             cardid = request.session['card']
-            # Todo: sprawdzic co sie stanie jak w sesji bedzie zapisane id a nie bedzie w bazie
             card = Card.objects.get(id=cardid)
             total_price = card.price
 
@@ -220,7 +221,7 @@ def Billing(request):
 
     for product_quantity in product_quantities:
         product_id = product_quantity['product__id']
-        carditem = CardItem.objects.get(product__id=product_id, card=card)
+        carditem = CardItem.objects.get(product__id=product_id, card=card, price=product_quantity['product__carditem__price'])
         total_quantity = product_quantity['total_quantity']
 
         # Pobierz produkt
