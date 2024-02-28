@@ -1,7 +1,7 @@
 {% extends 'base_admin.html' %}
 
 {% block content %}
-     <div class="container">
+     <div class="container" >
          <h1 class="mt-4">Zamowienia</h1>
             <div class="row">
                 <div class="col-md-12">
@@ -13,6 +13,7 @@
                                 <th scope="col">Data</th>
                                 <th scope="col">Stan</th>
                                 <th scope="col">Akcje</th>
+                                <th scope="col">Szczegóły</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -28,13 +29,17 @@
                                     {% endif %}
 
                                     <td>
-                                        {% if order.is_delivered %}
+                                        {% if order.is_shipped  %}
                                                 <a href="{% url 'mark_order_as_delivered' order.id %}" class="btn btn-info">Oznacz dostarczone</a>
+
 
                                         {%  else %}
                                                 <a href="{% url 'mark_order_as_shipped' order.id %}" class="btn btn-info">Oznacz wyslane</a>
+
                                         {% endif %}
-                                        <a href="" class="btn btn-danger">Usuń</a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'order_detail' order.id %}" class="btn btn-info">Szczegóły</a>
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -271,9 +271,16 @@ def success(request):
         product.amount -= card_item.quantity
         product.save()
 
+    card_items = CardItem.objects.filter(card=card).all()
+    context = {
+        'card': card,
+        'card_items': card_items,
+    }
     del request.session['card']
 
-    return redirect('afterpage')
+    #return redirect('afterpage')
+    return render(request, 'product/success.html',context=context)
+
 
 
 def cancel(request):

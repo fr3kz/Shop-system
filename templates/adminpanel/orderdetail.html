@@ -5,7 +5,7 @@
 <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
+                <div class="card mt-5 mb-5">
                     <div class="card-title">
                         <h3 class="text-center">Zamowienie nr: {{card.id}}</h3>
                     </div>
@@ -25,23 +25,56 @@
                                     {% for item in card_items %}
                                     <tr>
                                         <td>{{item.product.title}} {% for option in item.size.all %}
-                                          {{ option.amount }} {{ option.price }} zł
-                                        {% endfor %}</td>
+                                          {{ option.amount }} ml {{ option.price }} zł
+                                        </td>
                                         <td>{{item.quantity}}</td>
-                                        <td>{{item.product.price}} zł</td>
+                                        <td>{{option.price}} zł</td>
                                         <td>{{item.price}} zł</td>
+                                            {% endfor %}
+
                                     </tr>
                                     {% endfor %}
+                                    <tr>
+                                        <td><strong>Dosatwa</strong></td>
+                                        <td>1</td>
+                                        <td></td>
+                                        <td>0</td>
+                                    </tr>
                                     <tr>
                                         <td></td>
                                         <td></td>
                                         <td></td>
                                         <td><strong>Suma: {{card.price}} zł</strong></td>
                                     </tr>
+
                                 </tbody>
                             </table>
 
                     </div>
+                        <h5 class="text-center">Dane klienta</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Imie</th>
+                                        <th>Nazwisko</th>
+                                        <th>Adres</th>
+                                        <th>Telefon</th>
+                                        <th>Email</th>
+                                        <th>Paczkomat</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{card.first_name}}</td>
+                                        <td>{{card.last_name}}</td>
+                                        <td>{{card.address}}</td>
+                                        <td>{{card.phone}}</td>
+                                        <td>{{card.email}}</td>
+                                        <td>###########</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                 </div>
 
             </div>
