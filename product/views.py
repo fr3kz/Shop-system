@@ -299,7 +299,7 @@ def update_card(request, item_id):
 def update_card_price(card):
     card_items = CardItem.objects.filter(card=card)
 
-    total_price = sum(item.product.price * item.quantity for item in card_items)
+    total_price = card_items.get().price * card_items.get().quantity
     card.price = total_price
     card.save()
 
