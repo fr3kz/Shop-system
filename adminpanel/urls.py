@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (LoginView, AdminPanelView, AddProductView, AddPromoCodeView, OrdersView,StockView,OpinionsView
-,set_off_product,ProductEditView,mark_order_as_shipped,mark_order_as_delivered,delete_opinion)
+,set_off_product,ProductEditView,mark_order_as_shipped,mark_order_as_delivered,delete_opinion,CardDetailsView)
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='adminlogin'),
@@ -15,5 +15,6 @@ urlpatterns = [
     path('mark_order_as_shipped/<int:order_id>/', mark_order_as_shipped, name='mark_order_as_shipped'),
     path('mark_order_as_delivered/<int:order_id>/', mark_order_as_delivered, name='mark_order_as_delivered'),
     path('delete_opinion/<int:opinion_id>/', delete_opinion, name='delete_opinion'),
+    path('order_detail/<int:card_id>/', CardDetailsView.as_view(), name='order_detail'),
 
 ]

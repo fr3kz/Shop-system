@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import Loginform, AddProductForm, AddpromoCodeForm
-from product.models import Product, Promo_code, Card, Opinion
+from product.models import Product, Promo_code, Card, Opinion,CardItem
 from users.models import User
 
 
@@ -167,4 +167,12 @@ def delete_opinion(request, opinion_id):
     return redirect('opinions')
 
 
-#Todo: dodac w opcji wszystkie zamowienia mozliwosc wejscia w szczegoly zamowienia
+class CardDetailsView(View):
+    def get(self, request, card_id):
+        card = Card.objects.get(id=card_id)
+        card_items = CardItem.objects.filter(card=card).all()
+        context = {
+            'card': card,
+            'card_items':card_items,
+        }
+        return render(request, 'adminpanel/orderdetail.html', context=context)

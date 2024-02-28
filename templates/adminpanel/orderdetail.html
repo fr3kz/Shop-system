@@ -1,0 +1,39 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+    
+<h1>Card detail view</h1>
+    
+    <p>Card name: {{ card.name }}</p>
+    <p>Card description: {{ card.description }}</p>
+    <p>Card type: {{ card.type }}</p>
+    <p>Card rarity: {{ card.rarity }}</p>
+    <p>Card set: {{ card.set }}</p>
+    <p>Card image: <img src="{{ card.image.url }}" alt="{{ card.name }}" width="200" height="200"></p>
+    <p>Card price: {{ card.price }}</p>
+    <p>Card quantity: {{ card.quantity }}</p>
+    <p>Card created: {{ card.created }}</p>
+    <p>Card updated: {{ card.updated }}</p>
+    <p>Card user: {{ card.user }}</p>
+    <p>Card user email: {{ card.user.email }}</p>
+    <p>Card user phone: {{ card.user.phone }}</p>
+    <p>Card user address: {{ card.user.address }}</p>
+    <p>Card user city: {{ card.user.city }}</p>
+    <p>Card user country: {{ card.user.country }}</p>
+    <p>Card user postal code: {{ card.user.postal_code }}</p>
+    <p>Card user created: {{ card.user.created }}</p>
+    <p>Card user updated: {{ card.user.updated }}</p>
+    <p>Card user is active: {{ card.user.is_active }}</p>
+    <p>Card user is staff: {{ card.user.is_staff }}</p>
+    <p>Card user is admin: {{ card.user.is_admin }}</p>
+    <p>Card user is superuser: {{ card.user.is_superuser }}</p>
+    <p>Card user last login: {{ card.user.last_login }}</p>
+    <p>Card user date joined: {{ card.user.date_joined }}</p>
+    <p>Card user groups: {{ card.user.groups }}</p>
+    <p>Card user user permissions: {{ card.user.user_permissions }}</p>
+    <p>Card user username: {{ card.user.username }}</p>
+    <p>Card user first name: {{ card.user.first_name }}</p>
+    <p>Card user last name: {{ card.user.last_name }}</p>
+    <p>Card user email: {{ card.user.email }}</p>
+    <p>Card user phone: {{ card.user.phone }}</p>
+{% endblock %}

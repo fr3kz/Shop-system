@@ -58,6 +58,7 @@
                                     <td>{{ product.price }}</td>
                                     <td>
                                         <a href="{% url 'mark_order_as_shipped' product.id %}" class="btn btn-primary">Oznacz jako wyslane</a>
+                                        <a href="{% url 'order_detail' product.id %}" class="btn btn-primary">Szczegóły</a>
                                     </td>
                                 </tr>
                             {% endfor %}

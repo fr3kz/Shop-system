@@ -241,7 +241,7 @@ def Billing(request):
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
     checkout_session = stripe.checkout.Session.create(
-        payment_method_types=["card"],
+        payment_method_types=["card","blik","p24",],
         line_items=line_items,
         mode="payment",
         success_url="https://orca-app-tiz3h.ondigitalocean.app/success/",
