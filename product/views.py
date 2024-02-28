@@ -234,16 +234,17 @@ def Billing(request):
         # Pobierz produkt
         product = Product.objects.get(id=product_id)
 
+
         # Dodaj pozycję do listy zakupów
         line_items.append({
             'price_data': {
                 'currency': 'pln',
                 'product_data': {
-                    'name': product.title,
+                    'name': str(product.title + ' - ' + str(carditem.size.first().amount )+ ' ml'),
                 },
                 'unit_amount': int(carditem.price * 100),
             },
-            'quantity': total_quantity,
+            'quantity': carditem.quantity,
         })
 
     stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -304,7 +305,8 @@ def update_card(request, item_id):
 
         product = Product.objects.get(id=item_id)
 
-        card_item = CardItem.objects.filter(card=card, product=product,carditem_options__carditem__product_id=item_id).all()
+        card_item = CardItem.objects.filter(card=card, product=product).all()
+
 
         new_quantity = int(request.POST.get(f'quantity_{item_id}', 1))
         for item in card_item:
@@ -324,7 +326,7 @@ def update_card_price(card):
     total_price = 0
 
     for item in card_items:
-        total_price += item.product.price * item.quantity
+        total_price += item.price * item.quantity
 
     card.price = total_price
     card.save()
@@ -332,9 +334,9 @@ def update_card_price(card):
 
 def delete_from_card(request, item_id):
     card = Card.objects.get(id=request.session['card'])
-    CardItem.objects.get(card=card, product__id=item_id,carditem_options__carditem__product_id=item_id).delete()
+    CardItem.objects.get(card=card, product__id=item_id).delete()
 
-
+    update_card_price(card)
     return redirect('checkout')
 
     #Todo: jak ktos bedzie probowasl dodac 2x to same perfumy to tylko zwiekszyc ilosc
