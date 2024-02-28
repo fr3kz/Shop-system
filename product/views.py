@@ -220,7 +220,7 @@ def Billing(request):
 
     for product_quantity in product_quantities:
         product_id = product_quantity['product__id']
-        carditem = CardItem.objects.get(product__id=product_id)
+        carditem = CardItem.objects.get(product__id=product_id, card=card)
         total_quantity = product_quantity['total_quantity']
 
         # Pobierz produkt
@@ -275,4 +275,13 @@ def cancel(request):
 def AfterPage(request):
     return render(request, 'product/success.html')
 
+def update_card(request, item_id, quantity):
+    card = Card.objects.get(id=request.session['card'])
+    card_item = CardItem.objects.get(card=card, product__id=item_id)
 
+    card_item.quantity = quantity
+    card_item.save()
+
+    card.price += card_item.price * card_item.quantity
+    card.save()
+    return HttpResponse('ok')
