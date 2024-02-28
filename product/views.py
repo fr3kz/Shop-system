@@ -264,6 +264,13 @@ def success(request):
     card = Card.objects.get(id=request.session['card'])
     card.make_order()
 
+    card_items = CardItem.objects.filter(card=card).all()
+
+    for card_item in card_items:
+        product = Product.objects.get(id=card_item.product.id)
+        product.amount -= card_item.quantity
+        product.save()
+
     del request.session['card']
 
     return redirect('afterpage')
