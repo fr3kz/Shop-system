@@ -13,5 +13,5 @@ urlpatterns = [
         path('my_orders/',UserOrders.as_view(),name='my_orders'),
         path('my_account/', UserAccount.as_view(), name='my_account'),
         path('afterpage/',AfterPage ,name='afterpage'),
-        path('update_card/<int:item_id>/<int:quantity>/',update_card,name='update_card')
+        path('update_card/<int:item_id>/',update_card,name='update_card')
 ]

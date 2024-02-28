@@ -102,7 +102,7 @@ class CardView(View):
             product_item.save()
             return redirect('checkout')
 
-# TODO: Edycja koszyka
+
 class Checkout(View):
     def get(self, request):
 
@@ -275,13 +275,35 @@ def cancel(request):
 def AfterPage(request):
     return render(request, 'product/success.html')
 
-def update_card(request, item_id, quantity):
-    card = Card.objects.get(id=request.session['card'])
-    card_item = CardItem.objects.get(card=card, product__id=item_id)
 
-    card_item.quantity = quantity
-    card_item.save()
+def update_card(request, item_id):
+    if request.method == 'POST':
+        card = Card.objects.get(id=request.session['card'])
 
-    card.price += card_item.price * card_item.quantity
+        product = Product.objects.get(id=item_id)
+
+        card_item = CardItem.objects.get(card=card, product=product)
+
+        new_quantity = int(request.POST.get(f'quantity_{item_id}', 1))
+
+        card_item.quantity = new_quantity
+        card_item.save()
+
+        update_card_price(card)
+
+        return redirect('checkout')
+    else:
+        return HttpResponse('Method not allowed', status=405)
+
+
+def update_card_price(card):
+    card_items = CardItem.objects.filter(card=card)
+
+    total_price = sum(item.product.price * item.quantity for item in card_items)
+    card.price = total_price
     card.save()
-    return HttpResponse('ok')
+
+
+
+    #Todo: jak ktos bedzie probowasl dodac 2x to same perfumy to tylko zwiekszyc ilosc
+    #Todo: ogarnac zeby moglby byc te same perfumy ale z rozna wielkoscia
