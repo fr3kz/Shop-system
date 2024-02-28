@@ -46,6 +46,7 @@ class CardItem(models.Model):
     price = models.IntegerField(default=0, blank=True)
     card = models.ForeignKey(to='Card', on_delete=models.CASCADE, default="", blank=True)
     size = models.ManyToManyField(to=PerfumeOptions, default="", blank=True)
+    is_active = models.BooleanField(default=True)
 
 
     def __str__(self):

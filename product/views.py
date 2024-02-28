@@ -273,12 +273,14 @@ def success(request):
     card = Card.objects.get(id=request.session['card'])
     card.make_order()
 
-    card_items = CardItem.objects.filter(card=card).all()
+    card_items = CardItem.objects.filter(card=card,is_active=True).all()
 
     for card_item in card_items:
         product = Product.objects.get(id=card_item.product.id)
         product.amount -= card_item.quantity
         product.save()
+        card_item.is_active = False
+        card_item.save()
 
     card_items = CardItem.objects.filter(card=card).all()
     context = {
