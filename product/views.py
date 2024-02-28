@@ -72,8 +72,15 @@ class CardView(View):
             option_id = request.POST.get('option')
             option = PerfumeOptions.objects.get(id=option_id)
 
+            if CardItem.objects.filter(card=card, product=product, size=option).exists():
+                product_item = CardItem.objects.get(card=card, product=product, size=option)
+                product_item.quantity += 1
+                product_item.save()
+                card.price += option.price
+                card.save()
+                request.session['card'] = card.id
+                return redirect('checkout')
 
-            ##Todo:sprawdzenie czy obiekt jest juz w koszyku
             product_item = CardItem.objects.create(card=card, product=product)
             product_item.size.add(option)  # Dodaj opcję do pola ManyToManyField
 
@@ -297,12 +304,12 @@ def update_card(request, item_id):
 
         product = Product.objects.get(id=item_id)
 
-        card_item = CardItem.objects.get(card=card, product=product)
+        card_item = CardItem.objects.filter(card=card, product=product,carditem_options__carditem__product_id=item_id).all()
 
         new_quantity = int(request.POST.get(f'quantity_{item_id}', 1))
-
-        card_item.quantity = new_quantity
-        card_item.save()
+        for item in card_item:
+            item.quantity = new_quantity
+            item.save()
 
         update_card_price(card)
 
@@ -314,11 +321,21 @@ def update_card(request, item_id):
 def update_card_price(card):
     card_items = CardItem.objects.filter(card=card)
 
-    total_price = card_items.get().price * card_items.get().quantity
+    total_price = 0
+
+    for item in card_items:
+        total_price += item.product.price * item.quantity
+
     card.price = total_price
     card.save()
 
 
+def delete_from_card(request, item_id):
+    card = Card.objects.get(id=request.session['card'])
+    CardItem.objects.get(card=card, product__id=item_id,carditem_options__carditem__product_id=item_id).delete()
+
+
+    return redirect('checkout')
 
     #Todo: jak ktos bedzie probowasl dodac 2x to same perfumy to tylko zwiekszyc ilosc
     #Todo: ogarnac zeby moglby byc te same perfumy ale z rozna wielkoscia
