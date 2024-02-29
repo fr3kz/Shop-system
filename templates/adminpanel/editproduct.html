@@ -76,14 +76,7 @@
                                 {{ perfume_form.price }}
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="id_product" class="form-label">Produkt</label>
-                            <select name="product" class="form-select">
-                                {% for product in products %}
-                                <option value="{{ product.id }}">{{ product.title }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                      
                         <button type="submit" class="btn btn-primary">Dodaj opcję</button>
                     </form>
                 </div>
