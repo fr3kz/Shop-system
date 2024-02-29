@@ -2,14 +2,115 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Edytuj produkt</h1>
-    <div class="row">
+    <h1 class="mb-4">Edytuj produkt</h1>
+    <div class="row justify-content-center">
         <div class="col-md-6">
-            <form method="post" action="{% url 'edit_product' product.id %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-            </form>
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" action="{% url 'edit_product' product.id %}" enctype="multipart/form-data" class="row g-3">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="col-12">
+                            <label for="inputTitle" class="form-label">Tytuł</label>
+                            {{ form.title }}
+                            {{ form.title.errors }}
+                        </div>
+                        <div class="col-12">
+                            <label for="inputPrice" class="form-label">Cena</label>
+                            {{ form.price }}
+                            {{ form.price.errors }}
+                        </div>
+                        <div class="col-12">
+                            <label for="inputDescription" class="form-label">Opis</label>
+                            {{ form.description }}
+                            {{ form.description.errors }}
+                        </div>
+                        <div class="col-12">
+                            <label for="inputImage" class="form-label">Obraz</label>
+                            {{ form.image }}
+                            {{ form.image.errors }}
+                        </div>
+                        <div class="col-12">
+                            <label for="inputIsFeatured" class="form-label">Czy wyróżniony</label>
+                            {{ form.is_featured }}
+                            {{ form.is_featured.errors }}
+                        </div>
+                        <div class="col-12">
+                            <label for="inputAmount" class="form-label">Ilość</label>
+                            {{ form.amount }}
+                            {{ form.amount.errors }}
+                        </div>
+                        <div class="col-12">
+                            <label for="inputIsOn" class="form-label">Czy jest włączony</label>
+                            {{ form.is_on }}
+                            {{ form.is_on.errors }}
+                        </div>
+                        <div class="col-12">
+                            <label for="inputStars" class="form-label">Gwiazdki</label>
+                            {{ form.stars }}
+                            {{ form.stars.errors }}
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+
+                 <div class="card" style="margin-bottom: 20px;">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Ustawienia perfum</h5>
+                    <form method="post" action="{% url 'addperfumeoptions' product.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_amount" class="form-label">Ilość (ml)</label>
+                            {{ perfume_form.amount }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_price" class="form-label">Cena</label>
+                            <div class="input-group">
+                                <span class="input-group-text">PLN</span>
+                                {{ perfume_form.price }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_product" class="form-label">Produkt</label>
+                            <select name="product" class="form-select">
+                                {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Dodaj opcję</button>
+                    </form>
+                </div>
+            </div>
+            </div>
+           <div class="row">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Opcje Perfum</h5>
+            <div class="row">
+                {% for option in perfume_options %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ option.product.title }}</h6>
+                            <p class="card-text">Ilość: {{ option.amount }} ml</p>
+                            <p class="card-text">Cena: {{ option.price }} PLN</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
         </div>
     </div>
 </div>

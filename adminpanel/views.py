@@ -1,8 +1,8 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import Loginform, AddProductForm, AddpromoCodeForm
-from product.models import Product, Promo_code, Card, Opinion,CardItem
+from .forms import Loginform, AddProductForm, AddpromoCodeForm,PerfumeOptionsForm
+from product.models import Product, Promo_code, Card, Opinion,CardItem,PerfumeOptions
 from users.models import User
 
 
@@ -65,16 +65,22 @@ class AdminPanelView(View):
 class AddProductView(View):
     def get(self, request):
         product_form = AddProductForm()
+        perfumeoption_form = PerfumeOptionsForm()
         context = {
             'form': product_form,
+            'perfume_form': perfumeoption_form
         }
         return render(request, 'adminpanel/addproduct.html', context=context)
 
     def post(self, request):
         form = AddProductForm(request.POST, request.FILES)
+        perfume_form = PerfumeOptionsForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('adminpanel')
+        elif perfume_form.is_valid():
+                perfume_form.save()
+                return redirect('adminpanel')
         else:
             return render(request, 'adminpanel/addproduct.html', {'form': form})
 
@@ -101,8 +107,7 @@ class AddPromoCodeView(View):
 class OrdersView(View):
     def get(self, request):
         # TODO: ustawic filtrowanie tylko orderow
-        # orders = Card.objects.filter(is_order=True)
-        orders = Card.objects.all()
+        orders = Card.objects.filter(is_order=True, is_delivered=False).all()
         context = {
             'orders': orders
         }
@@ -133,10 +138,16 @@ class OpinionsView(View):
 class ProductEditView(View):
     def get(self, request, product_id):
         product = Product.objects.get(id=product_id)
+        products = Product.objects.filter().all()
+        perfume_options = PerfumeOptions.objects.filter(product=product).all()
         form = AddProductForm(instance=product)
+        perfume_form = PerfumeOptionsForm()
         context = {
             'form': form,
             'product': product,
+            'products': products,
+            'perfume_form': perfume_form,
+            'perfume_options': perfume_options,
         }
         return render(request, 'adminpanel/editproduct.html', context=context)
 
@@ -144,6 +155,11 @@ class ProductEditView(View):
 def set_off_product(request, product_id):
     product = Product.objects.get(id=product_id)
     product.set_off(self=product)
+    return redirect('stock')
+
+def set_on_product(request, product_id):
+    product = Product.objects.get(id=product_id)
+    product.set_on(self=product)
     return redirect('stock')
 
 
@@ -176,3 +192,15 @@ class CardDetailsView(View):
             'card_items':card_items,
         }
         return render(request, 'adminpanel/orderdetail.html', context=context)
+
+
+def add_perfume_options(request, product_id):
+    product = Product.objects.get(id=product_id)
+    form = PerfumeOptionsForm(request.POST)
+
+    if form.is_valid():
+
+        perfoption = form.save()
+        perfoption.product = product
+        perfoption.save()
+        return redirect('stock' )

@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from sklep import settings
 from .models import Product, Card, Opinion, Promo_code, CardItem, PerfumeOptions
-from .forms import OpinionForm, AccountForm
+from .forms import OpinionForm, AccountForm, PerfumeOptionsForm
 from users.models import User
 
 
@@ -340,6 +340,16 @@ def delete_from_card(request, item_id):
 
     update_card_price(card)
     return redirect('checkout')
+
+
+
+
+
+
+
+
+
+
 
     #Todo: jak ktos bedzie probowasl dodac 2x to same perfumy to tylko zwiekszyc ilosc
     #Todo: ogarnac zeby moglby byc te same perfumy ale z rozna wielkoscia

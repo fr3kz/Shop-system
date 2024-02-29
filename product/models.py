@@ -22,6 +22,11 @@ class Product(models.Model):
         self.is_on = False
         self.save()
 
+    @staticmethod
+    def set_on(self):
+        self.is_on = True
+        self.save()
+
 class PerfumeOptions(models.Model):
     amount = models.IntegerField(default=1)  # in mililitres
     price = models.IntegerField(default=0)

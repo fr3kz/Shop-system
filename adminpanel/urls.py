@@ -1,20 +1,28 @@
+from django.contrib.auth.decorators import user_passes_test
 from django.urls import path
-from .views import (LoginView, AdminPanelView, AddProductView, AddPromoCodeView, OrdersView,StockView,OpinionsView
-,set_off_product,ProductEditView,mark_order_as_shipped,mark_order_as_delivered,delete_opinion,CardDetailsView)
+from django.contrib.auth.views import LoginView
+from .views import (AdminPanelView, AddProductView, AddPromoCodeView, OrdersView, StockView, OpinionsView,
+                    set_off_product, ProductEditView, mark_order_as_shipped, mark_order_as_delivered, delete_opinion,
+                    CardDetailsView,add_perfume_options,set_on_product)
+
+
+def staff_member_required(user):
+    return user.is_authenticated and user.is_staff
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='adminlogin'),
-    path('',AdminPanelView.as_view(), name='adminpanel'),
-    path('addproduct/', AddProductView.as_view(), name='addproduct'),
-    path('addpromocode/', AddPromoCodeView.as_view(), name='addpromocode'),
-    path('orders/', OrdersView.as_view(), name='orders'),
-    path('stock/', StockView.as_view(), name='stock'),
-    path('opinions/', OpinionsView.as_view(), name='opinions'),
-    path('setoff_product/<int:product_id>/', set_off_product, name='setoff_product'),
-    path('edit_product/<int:product_id>/', ProductEditView.as_view(), name='edit_product'),
-    path('mark_order_as_shipped/<int:order_id>/', mark_order_as_shipped, name='mark_order_as_shipped'),
-    path('mark_order_as_delivered/<int:order_id>/', mark_order_as_delivered, name='mark_order_as_delivered'),
-    path('delete_opinion/<int:opinion_id>/', delete_opinion, name='delete_opinion'),
-    path('order_detail/<int:card_id>/', CardDetailsView.as_view(), name='order_detail'),
-
+    path('', user_passes_test(staff_member_required, login_url='/login/')(AdminPanelView.as_view()), name='adminpanel'),
+    path('addproduct/', user_passes_test(staff_member_required, login_url='/login/')(AddProductView.as_view()), name='addproduct'),
+    path('addpromocode/', user_passes_test(staff_member_required, login_url='/login/')(AddPromoCodeView.as_view()), name='addpromocode'),
+    path('orders/', user_passes_test(staff_member_required, login_url='/login/')(OrdersView.as_view()), name='orders'),
+    path('stock/', user_passes_test(staff_member_required, login_url='/login/')(StockView.as_view()), name='stock'),
+    path('opinions/', user_passes_test(staff_member_required, login_url='/login/')(OpinionsView.as_view()), name='opinions'),
+    path('setoff_product/<int:product_id>/', user_passes_test(staff_member_required, login_url='/login/')(set_off_product), name='setoff_product'),
+    path('seton_product/<int:product_id>/', user_passes_test(staff_member_required, login_url='/login/')(set_on_product), name='seton_product'),
+    path('edit_product/<int:product_id>/', user_passes_test(staff_member_required, login_url='/login/')(ProductEditView.as_view()), name='edit_product'),
+    path('mark_order_as_shipped/<int:order_id>/', user_passes_test(staff_member_required, login_url='/login/')(mark_order_as_shipped), name='mark_order_as_shipped'),
+    path('mark_order_as_delivered/<int:order_id>/', user_passes_test(staff_member_required, login_url='/login/')(mark_order_as_delivered), name='mark_order_as_delivered'),
+    path('delete_opinion/<int:opinion_id>/', user_passes_test(staff_member_required, login_url='/login/')(delete_opinion), name='delete_opinion'),
+    path('order_detail/<int:card_id>/', user_passes_test(staff_member_required, login_url='/login/')(CardDetailsView.as_view()), name='order_detail'),
+    path('addperfumeoptions/<int:product_id>/', user_passes_test(staff_member_required, login_url='/login/')(add_perfume_options), name='addperfumeoptions'),
 ]

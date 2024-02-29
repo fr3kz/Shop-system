@@ -1,34 +1,41 @@
 {% extends 'base_admin.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">Dodaj produkt</h1>
-    <div class="row">
-        <div class="col-md-6">
-            <form method="post" action="{% url 'addproduct' %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="id_title" class="form-label">Tytuł</label>
-                    {{ form.title }}
-                </div>
-                <div class="mb-3">
-                    <label for="id_description" class="form-label">Opis</label>
-                    {{ form.description  }}
-                </div>
-                <div class="mb-3">
-                    <label for="id_price" class="form-label">Cena</label>
-                    <div class="input-group">
-                        <span class="input-group-text">PLN</span>
-                        {{ form.price }}
+<div class="container-fluid" style="background-color: #e4e4e4;">
+    <div class="container mt-4" >
+        <h1 class="mb-4">Dodaj produkt</h1>
+        <div class="row">
+            <div class="col-md-8 ">
+                <div class="card" style="margin-bottom: 20px;">
+                    <div class="card-body">
+                        <form method="post" action="{% url 'addproduct' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_title" class="form-label">Tytuł</label>
+                                {{ form.title }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_description" class="form-label">Opis</label>
+                                {{ form.description }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_price" class="form-label">Cena</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">PLN</span>
+                                    {{ form.price }}
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_image" class="form-label">Zdjęcie</label>
+                                {{ form.image }}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Zapisz</button>
+                        </form>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="id_image" class="form-label">Zdjęcie</label>
-                    {{ form.image }}
-                </div>
+            </div>
 
-                <button type="submit" class="btn btn-primary">Zapisz</button>
-            </form>
         </div>
     </div>
 </div>

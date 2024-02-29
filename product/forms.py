@@ -17,4 +17,4 @@ class AccountForm(ModelForm):
 class PerfumeOptionsForm(ModelForm):
     class Meta:
         model = PerfumeOptions
-        fields = ['amount', 'price']
+        fields = ['amount', 'price','product']
