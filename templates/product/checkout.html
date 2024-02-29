@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
+<div class="container-fluid" style="background-color: #cccccc;">
+<div class="container" >
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <div class="card my-5">
@@ -14,26 +15,35 @@
     {% for item in card_products %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
             {{ item.product.title }}  - {{ item.price }} zł
-            <div class="input-group" style="width: 120px;">
-                <form action="{% url 'update_card' item.product.id %}" method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="quantity" value="{{ item.quantity }}">
-                    <select class="form-select" aria-label="Default select example" name="quantity_{{ item.product.id }}" id="quantity_{{ item.product.id }}">
-                        <option selected value="{{ item.quantity }}">{{ item.quantity }}</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline" type="submit">Odświerz</button>
-                    </div>
-                </form>
-                <div class="input-group-append">
-                    <a href="{% url 'delete_product_from_card' item.product.id %}" class="btn btn-outline-danger" type="button" data-toggle="modal" data-target="#removeItem{{ item.id }}">Usuń</a>
-                </div>
+        <div class="row">
+    <div class="col"></div>
+    <div class="col-8">
+        <form action="{% url 'update_card' item.product.id %}" method="POST" class="row align-items-center justify-content-end">
+            {% csrf_token %}
+            <input type="hidden" name="quantity" value="{{ item.quantity }}">
+            <div class="col-auto">
+                <select class="form-select" aria-label="Default select example" name="quantity_{{ item.product.id }}" id="quantity_{{ item.product.id }}">
+                    <option selected value="{{ item.quantity }}">{{ item.quantity }}</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
             </div>
+            <div class="col-auto">
+                <button class="btn btn-info" type="submit">Odśwież</button>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'delete_product_from_card' item.product.id %}" class="btn btn-outline-danger" type="button" data-toggle="modal" data-target="#removeItem{{ item.id }}">Usuń</a>
+            </div>
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
+
+
+
         </li>
         <!-- Modal -->
         <div class="modal fade" id="removeItem{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="removeItemLabel{{ item.id }}" aria-hidden="true">
@@ -126,4 +136,5 @@
         </div>
     </div>
 </div>
+    </div>
 {% endblock %}

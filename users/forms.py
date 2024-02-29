@@ -13,7 +13,7 @@ class LoginForm(forms.Form):
 class RegisterForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'address', 'phone_number']
+        fields = ['email', 'first_name', 'last_name']
 
     def clean_username(self):
         username = self.cleaned_data.get('email')
