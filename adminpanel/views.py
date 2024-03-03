@@ -106,7 +106,6 @@ class AddPromoCodeView(View):
 
 class OrdersView(View):
     def get(self, request):
-        # TODO: ustawic filtrowanie tylko orderow
         orders = Card.objects.filter(is_order=True, is_delivered=False).all()
         context = {
             'orders': orders
@@ -151,6 +150,19 @@ class ProductEditView(View):
         }
         return render(request, 'adminpanel/editproduct.html', context=context)
 
+    def post(self, request, product_id):
+        product = Product.objects.get(id=product_id)
+        form = AddProductForm(request.POST, request.FILES, instance=product)
+        perfume_form = PerfumeOptionsForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('stock')
+        elif perfume_form.is_valid():
+            perfume_form.save()
+            return redirect('stock')
+        else:
+            return render(request, 'adminpanel/editproduct.html', {'form': form})
 
 def set_off_product(request, product_id):
     product = Product.objects.get(id=product_id)
@@ -202,5 +214,6 @@ def add_perfume_options(request, product_id):
 
         perfoption = form.save()
         perfoption.product = product
+        perfoption.title = product.title
         perfoption.save()
         return redirect('stock' )
