@@ -312,7 +312,7 @@ def update_card(request, item_id):
 
         card_item = CardItem.objects.filter(card=card, product=product,is_active=True).all()
 
-
+    #
         new_quantity = int(request.POST.get(f'quantity_{item_id}', 1))
         for item in card_item:
             item.quantity = new_quantity
