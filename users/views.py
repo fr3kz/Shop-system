@@ -44,6 +44,8 @@ class RegisterView(View):
             user = form.save(commit=False)
             user.username = username
             user.set_password(password)
+            user.first_name = form.cleaned_data['first_name']
+            user.last_name = form.cleaned_data['last_name']
             user.save()
             login(request, user)
 
