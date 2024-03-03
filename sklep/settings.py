@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'adminpanel',
 
 
-    'stripe',]
+    'stripe',
+
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -147,3 +149,6 @@ STRIPE_PUBLISHABLE_KEY = 'pk_test_51Ok7JLJIzfTZ5jUz575dou7carjQa04kbq6jk8qBZtnYr
 PAYMENT_SUCCESS_URL = '/success/'
 PAYMENT_CANCEL_URL = '/cancel/'
 STRIPE_SECRET_KEY = 'sk_test_51Ok7JLJIzfTZ5jUzQ2CAnYZbIt1WaJikG2TAYJY6SEqqLc2GAJ2TDUbzW3EgSHT9IWEZeXFkTICb7YaeMpZa8UII00Dqet4P7Q'
+
+
+LOGIN_URL = '/login/'

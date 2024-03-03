@@ -1,7 +1,6 @@
 import django.utils.timezone
 import stripe
 from django.contrib.auth.decorators import login_required
-from django.core.serializers import serialize
 from django.shortcuts import redirect
 from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404
@@ -97,12 +96,12 @@ class CardView(View):
             card = Card.objects.create(user=request.user)
             product = Product.objects.get(id=item_id)
 
-            # Uzyskaj wybraną opcję z żądania POST
+            
             option_id = request.POST.get('option')
             option = PerfumeOptions.objects.get(id=option_id)
 
             product_item = CardItem.objects.create(card=card, product=product)
-            product_item.size.add(option)  # Dodaj opcję do pola ManyToManyField
+            product_item.size.add(option)  
 
             card.price += option.price
             card.save()
@@ -179,9 +178,13 @@ class UserAccount(View):
         account = request.user
         form = AccountForm(instance=account)
 
+        orders = Card.objects.filter(user=request.user)
+
+
         context = {
             'user': account,
             'form': form,
+            'orders':orders,
         }
 
         return render(request, 'product/user_profile.html', context=context)
@@ -341,15 +344,4 @@ def delete_from_card(request, item_id):
     update_card_price(card)
     return redirect('checkout')
 
-
-
-
-
-
-
-
-
-
-
-    #Todo: jak ktos bedzie probowasl dodac 2x to same perfumy to tylko zwiekszyc ilosc
     #Todo: ogarnac zeby moglby byc te same perfumy ale z rozna wielkoscia
