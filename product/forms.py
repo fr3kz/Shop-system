@@ -12,7 +12,7 @@ class OpinionForm(forms.Form):
 class AccountForm(ModelForm):
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'address', 'phone_number']
+        fields = ['email', 'first_name', 'last_name', 'address', 'phone_number','city','postal_code']
 
 class PerfumeOptionsForm(ModelForm):
     class Meta:

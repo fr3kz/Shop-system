@@ -1,19 +1,101 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container-fluid" style="background-color: #cccccc;">
-<div class="container mt-4">
-    <h1>Edytuj konto</h1>
-    <div class="row">
-        <div class="col-md-6">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
-            </form>
+<div class="container-fluid" style="background-color: #f8f9fa;">
+    <div class="container">
+        <h1 class="text-center" style="margin: 10px;">Twój profil {{ user.first_name }}</h1>
+        <div class="row align-items-stretch">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        Dane
+                    </div>
+                    <div class="card-body">
+                                <form method="post" action="{% url 'my_account' %}" enctype="multipart/form-data" class="form">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="email" class="form-label">Adres e-mail:</label>
+        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" >
+    </div>
+    <div class="mb-3">
+        <label for="first_name" class="form-label">Imię:</label>
+        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" >
+    </div>
+    <div class="mb-3">
+        <label for="last_name" class="form-label">Nazwisko:</label>
+        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" >
+    </div>
+    <div class="mb-3">
+        <label for="address" class="form-label">Adres:</label>
+        <input type="text" class="form-control" id="address" name="address" value="{{ user.address }}">
+    </div>
+    <div class="mb-3">
+        <label for="postal_code" class="form-label">Kod pocztowy:</label>
+        <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{ user.postal_code }}">
+        <small id="post_codeHelp" class="form-text text-muted">Napisz kod bez podawania myślnika np 10678</small>
+
+    </div>
+    <div class="mb-3">
+        <label for="city" class="form-label">Miasto:</label>
+        <input type="text" class="form-control" id="city" name="city" value="{{ user.city }}">
+    </div>
+    <div class="mb-3">
+        <label for="phone_number" class="form-label">Numer telefonu:</label>
+        <input type="tel" class="form-control" id="phone_number" name="phone_number" value="{{ user.phone_number }}">
+    </div>
+    {% if form.errors %}
+    <div class="alert alert-danger" role="alert">
+        <strong>Wystąpiły następujące błędy:</strong>
+        <ul>
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    <li>{{ field|title }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+</form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-header">
+                        Zamówienia
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Nazwa</th>
+                                    <th scope="col">Data</th>
+                                    <th scope="col">Stan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>{{ order.user.email }}</td>
+                                    <td>{{ order.date }}</td>
+                                    {% if order.is_shipped %}
+                                    <td>Wysłano</td>
+
+                                    {% elif order.is_delivered %}
+                                        <td>Dostarczono</td>
+                                    {% else %}
+                                    <td>Oczekiwanie na wysyłkę</td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-    </div>
-
 {% endblock %}

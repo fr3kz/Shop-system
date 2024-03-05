@@ -178,7 +178,7 @@ class UserAccount(View):
         account = request.user
         form = AccountForm(instance=account)
 
-        orders = Card.objects.filter(user=request.user)
+        orders = Card.objects.filter(user=request.user,is_order=True)
 
 
         context = {
