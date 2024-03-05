@@ -42,10 +42,48 @@
 
 
       </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
 
-      </form>
+
+<form class="d-flex" role="search">
+    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchInput">
+    <div id="searchResults"></div>
+</form>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', function () {
+            const query = searchInput.value.trim();
+            if (query.length === 0) {
+                searchResults.innerHTML = '';
+                return;
+            }
+
+            fetch(`/live-search/?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const results = data.results;
+                    let html = '';
+                    if (results.length === 0) {
+                        html = '<div class="alert alert-warning" role="alert">No results found</div>';
+                    } else {
+                        html = '<ul class="list-group">';
+                        results.forEach(result => {
+                            html += `<li class="list-group-item"><a href="/product/${result[1]}">${result[0]}</a></li>`;
+                        });
+                        html += '</ul>';
+                    }
+                    searchResults.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    });
+</script>
+
+
      {% if user.is_authenticated %}
             <a class="btn btn-outline-success" href="{% url 'logout' %}" type="submit">Wyloguj </a>
           {% else %}
