@@ -32,10 +32,13 @@ class Product(models.Model):
 class PerfumeOptions(models.Model):
     amount = models.IntegerField(default=1)  # in mililitres
     price = models.IntegerField(default=0)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='perfume_options', null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='perfume_options', null=True,
+                                blank=True)
     title = models.CharField(max_length=50, default="")
+
     def __str__(self):
         return f"{self.amount} ml - {self.price} zł - {self.title}"
+
 
 class Opinion(models.Model):
     author = models.ForeignKey(to=User, on_delete=models.CASCADE, default="")
@@ -56,9 +59,9 @@ class CardItem(models.Model):
     size = models.ManyToManyField(to=PerfumeOptions, default="", blank=True)
     is_active = models.BooleanField(default=True)
 
-
     def __str__(self):
         return f"{self.product.title} - {self.quantity} szt. - {self.price} zł"
+
 
 class Card(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE, default="", blank=True)
@@ -96,6 +99,10 @@ class Card(models.Model):
         if self.price >= 300:
             self.free_shipping = True
             self.save()
+        else:
+            self.free_shipping = False
+            self.save()
+
 
 class Promo_code(models.Model):
     code = models.CharField(max_length=10, default="")
@@ -121,5 +128,3 @@ class Category(models.Model):
 
     def __str__(self):
         return self.title
-
-

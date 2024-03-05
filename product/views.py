@@ -11,7 +11,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
 from sklep import settings
-from .models import Product, Card, Opinion, Promo_code, CardItem, PerfumeOptions,Category
+from .models import Product, Card, Opinion, Promo_code, CardItem, PerfumeOptions, Category
 from .forms import OpinionForm, AccountForm, PerfumeOptionsForm
 from users.models import User
 from django.shortcuts import redirect
@@ -27,9 +27,9 @@ class MainView(View):
     fproducts = Product.objects.filter(is_featured=True)
     context = {
         'products': products,
-        'fproducts': fproducts,
-        'men_products': Product.objects.filter(category__title='Men', is_on=True),
-        'woman_products': Product.objects.filter(category__title='Women', is_on=True),
+        'fproducts': fproducts[:3],
+        'men_products': Product.objects.filter(category__title='Men', is_on=True)[0:6],
+        'woman_products': Product.objects.filter(category__title='Women', is_on=True)[0:6],
 
     }
 
@@ -43,7 +43,7 @@ class ProductView(View):
         perfume_options = product.perfume_options.all()
         context = {
             'product': product,
-            'opinions': product.opinion_set.all(),
+            'opinions': product.opinion_set.all().order_by('-id')[:6],
             'product_options': perfume_options,
         }
         return render(request, 'product/product_detail.html', context=context)
@@ -101,18 +101,16 @@ class CardView(View):
 
             card.calculate_shipping(card)
 
-
             return redirect('checkout')
         else:
             card = Card.objects.create(user=request.user)
             product = Product.objects.get(id=item_id)
 
-            
             option_id = request.POST.get('option')
             option = PerfumeOptions.objects.get(id=option_id)
 
             product_item = CardItem.objects.create(card=card, product=product)
-            product_item.size.add(option)  
+            product_item.size.add(option)
 
             card.price += option.price
             card.save()
@@ -128,6 +126,7 @@ class Checkout(View):
         if 'card' in request.session:
             cardid = request.session['card']
             card = Card.objects.get(id=cardid)
+            update_card_price(card)
             total_price = card.price
 
             promo_code = Card.promo_code
@@ -135,7 +134,6 @@ class Checkout(View):
             card_promocde = card.promo_code
             if card_promocde:
                 Promocode = Promo_code.objects.get(code=card_promocde)
-
 
             product_items = CardItem.objects.filter(card=card).all()
             context = {
@@ -190,13 +188,12 @@ class UserAccount(View):
         account = request.user
         form = AccountForm(instance=account)
 
-        orders = Card.objects.filter(user=request.user,is_order=True)
-
+        orders = Card.objects.filter(user=request.user, is_order=True)
 
         context = {
             'user': account,
             'form': form,
-            'orders':orders,
+            'orders': orders,
         }
 
         return render(request, 'product/user_profile.html', context=context)
@@ -215,6 +212,7 @@ class UserAccount(View):
 
 def Billing(request):
     card = Card.objects.get(id=request.session['card'])
+    update_card_price(card)
     user = request.user
     card.first_name = request.POST.get('first_name')
     card.last_name = request.POST.get('last_name')
@@ -235,29 +233,29 @@ def Billing(request):
     cart_items = CardItem.objects.filter(card=card)
 
     # Zlicz ilość każdego produktu w koszyku
-    product_quantities = cart_items.values('product__id','product__carditem__price').annotate(total_quantity=Sum('quantity'))
+    product_quantities = cart_items.values('product__id', 'product__carditem__price').annotate(
+        total_quantity=Sum('quantity'))
 
     for product_quantity in product_quantities:
         product_id = product_quantity['product__id']
-        carditem = CardItem.objects.get(product__id=product_id, card=card, price=product_quantity['product__carditem__price'],is_active=True)
+        carditem = CardItem.objects.get(product__id=product_id, card=card,
+                                        price=product_quantity['product__carditem__price'], is_active=True)
         total_quantity = product_quantity['total_quantity']
 
         # Pobierz produkt
         product = Product.objects.get(id=product_id)
-
 
         # Dodaj pozycję do listy zakupów
         line_items.append({
             'price_data': {
                 'currency': 'pln',
                 'product_data': {
-                    'name': str(product.title + ' - ' + str(carditem.size.first().amount )+ ' ml'),
+                    'name': str(product.title + ' - ' + str(carditem.size.first().amount) + ' ml'),
                 },
                 'unit_amount': int(carditem.price * 100),
             },
             'quantity': carditem.quantity,
         })
-
 
     if not card.free_shipping:
         line_items.append({
@@ -266,14 +264,14 @@ def Billing(request):
                 'product_data': {
                     'name': 'Dostawa',
                 },
-                'unit_amount': 10*100,
+                'unit_amount': 10 * 100,
             },
             'quantity': 1,
         })
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
     checkout_session = stripe.checkout.Session.create(
-        payment_method_types=["card","blik","p24",],
+        payment_method_types=["card", "blik", "p24", ],
         line_items=line_items,
         mode="payment",
         success_url="https://orca-app-tiz3h.ondigitalocean.app/success/",
@@ -287,7 +285,7 @@ def Billing(request):
 def live_search(request):
     query = request.GET.get('query', '')
     products = Product.objects.filter(title__icontains=query)
-    product_titles = list(products.values_list('title','id'))
+    product_titles = list(products.values_list('title', 'id'))
 
     return JsonResponse({'results': product_titles})
 
@@ -296,7 +294,7 @@ def success(request):
     card = Card.objects.get(id=request.session['card'])
     card.make_order()
 
-    card_items = CardItem.objects.filter(card=card,is_active=True).all()
+    card_items = CardItem.objects.filter(card=card, is_active=True).all()
 
     for card_item in card_items:
         product = Product.objects.get(id=card_item.product.id)
@@ -312,13 +310,13 @@ def success(request):
     }
     del request.session['card']
 
-    #return redirect('afterpage')
-    return render(request, 'product/success.html',context=context)
-
+    # return redirect('afterpage')
+    return render(request, 'product/success.html', context=context)
 
 
 def cancel(request):
     return redirect('checkout')
+
 
 def AfterPage(request):
     return render(request, 'product/success.html')
@@ -330,9 +328,9 @@ def update_card(request, item_id):
 
         product = Product.objects.get(id=item_id)
 
-        card_item = CardItem.objects.filter(card=card, product=product,is_active=True).all()
+        card_item = CardItem.objects.filter(card=card, product=product, is_active=True).all()
 
-    #
+        #
         new_quantity = int(request.POST.get(f'quantity_{item_id}', 1))
         for item in card_item:
             item.quantity = new_quantity
@@ -346,7 +344,7 @@ def update_card(request, item_id):
 
 
 def update_card_price(card):
-    card_items = CardItem.objects.filter(card=card,is_active=True)
+    card_items = CardItem.objects.filter(card=card, is_active=True)
 
     total_price = 0
 
@@ -369,14 +367,13 @@ def delete_from_card(request, item_id):
     update_card_price(card)
     return redirect('checkout')
 
-    #Todo: ogarnac zeby moglby byc te same perfumy ale z rozna wielkoscia
+    # Todo: ogarnac zeby moglby byc te same perfumy ale z rozna wielkoscia
 
 
 class CategoryPage(View):
     def get(self, request, category):
-        products = Product.objects.filter(category__title=category,is_on=True).all()
+        products = Product.objects.filter(category__title=category, is_on=True).all()
         category = Category.objects.get(title=category)
-
 
         context = {
             'products': products,
