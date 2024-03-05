@@ -72,6 +72,7 @@ class CardView(View):
             card = Card.objects.filter(user=request.user, is_order=False).first()
             product = Product.objects.get(id=item_id)
 
+
             # Uzyskaj wybraną opcję z żądania POST
             option_id = request.POST.get('option')
             option = PerfumeOptions.objects.get(id=option_id)
@@ -146,7 +147,7 @@ class Checkout(View):
             }
             return render(request, 'product/checkout.html', context=context)
         else:
-            return render(request, 'product/main.html')
+            return redirect('main_page')
 
     def post(self, request):
         promo_code = request.POST.get('promo_code')
@@ -236,26 +237,49 @@ def Billing(request):
     product_quantities = cart_items.values('product__id', 'product__carditem__price').annotate(
         total_quantity=Sum('quantity'))
 
-    for product_quantity in product_quantities:
-        product_id = product_quantity['product__id']
-        carditem = CardItem.objects.get(product__id=product_id, card=card,
-                                        price=product_quantity['product__carditem__price'], is_active=True)
-        total_quantity = product_quantity['total_quantity']
+    if card.promo_code:
+        promo = Promo_code.objects.get(code=card.promo_code)
+        for product_quantity in product_quantities:
+            product_id = product_quantity['product__id']
+            carditem = CardItem.objects.get(product__id=product_id, card=card,
+                                            price=product_quantity['product__carditem__price'], is_active=True)
+            total_quantity = product_quantity['total_quantity']
 
-        # Pobierz produkt
-        product = Product.objects.get(id=product_id)
+            # Pobierz produkt
+            product = Product.objects.get(id=product_id)
 
-        # Dodaj pozycję do listy zakupów
-        line_items.append({
-            'price_data': {
-                'currency': 'pln',
-                'product_data': {
-                    'name': str(product.title + ' - ' + str(carditem.size.first().amount) + ' ml'),
+            # Dodaj pozycję do listy zakupów
+            line_items.append({
+                'price_data': {
+                    'currency': 'pln',
+                    'product_data': {
+                        'name': str(product.title + ' - ' + str(carditem.size.first().amount) + ' ml') + ' Z kodem promocyjnym'
+                    },
+                    'unit_amount': int((carditem.price *(1- promo.discount/100) ) * 100),
                 },
-                'unit_amount': int(carditem.price * 100),
-            },
-            'quantity': carditem.quantity,
-        })
+                'quantity': carditem.quantity,
+            })
+    else:
+        for product_quantity in product_quantities:
+            product_id = product_quantity['product__id']
+            carditem = CardItem.objects.get(product__id=product_id, card=card,
+                                            price=product_quantity['product__carditem__price'], is_active=True)
+            total_quantity = product_quantity['total_quantity']
+
+            # Pobierz produkt
+            product = Product.objects.get(id=product_id)
+
+            # Dodaj pozycję do listy zakupów
+            line_items.append({
+                'price_data': {
+                    'currency': 'pln',
+                    'product_data': {
+                        'name': str(product.title + ' - ' + str(carditem.size.first().amount) + ' ml'),
+                    },
+                    'unit_amount': int(carditem.price * 100),
+                },
+                'quantity': carditem.quantity,
+            })
 
     if not card.free_shipping:
         line_items.append({
@@ -356,6 +380,11 @@ def update_card_price(card):
     card.calculate_shipping(card)
     if not card.free_shipping:
         card.price += 10
+
+    #promo code
+    if card.promo_code:
+        promo = Promo_code.objects.get(code=card.promo_code)
+        card.price *= (1 - (promo.discount / 100))
 
     card.save()
 
