@@ -11,7 +11,7 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
 from sklep import settings
-from .models import Product, Card, Opinion, Promo_code, CardItem, PerfumeOptions
+from .models import Product, Card, Opinion, Promo_code, CardItem, PerfumeOptions,Category
 from .forms import OpinionForm, AccountForm, PerfumeOptionsForm
 from users.models import User
 from django.shortcuts import redirect
@@ -370,3 +370,16 @@ def delete_from_card(request, item_id):
     return redirect('checkout')
 
     #Todo: ogarnac zeby moglby byc te same perfumy ale z rozna wielkoscia
+
+
+class CategoryPage(View):
+    def get(self, request, category):
+        products = Product.objects.filter(category__title=category,is_on=True).all()
+        category = Category.objects.get(title=category)
+
+
+        context = {
+            'products': products,
+            'category': category,
+        }
+        return render(request, 'product/categoryview.html', context=context)

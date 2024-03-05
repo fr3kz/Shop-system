@@ -19,10 +19,8 @@
             Dla niego
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Perfumy</a></li>
-            <li><a class="dropdown-item" href="#"> Probki</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Action </a></li>
+            <li><a class="dropdown-item" href="{% url 'category_page' 'Men' %}">Perfumy</a></li>
+            <!--<li><a class="dropdown-item" href="#"> Probki</a></li> -->
           </ul>
         </li>
        <li class="nav-item dropdown">
@@ -30,11 +28,21 @@
             Dla niej
           </a>
           <ul class="dropdown-menu">
-             <li><a class="dropdown-item" href="#">Perfumy</a></li>
-            <li><a class="dropdown-item" href="#"> Probki</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Action </a></li>
+             <li><a class="dropdown-item" href="{% url 'category_page' 'Women' %}">Perfumy</a></li>
+            <!--<li><a class="dropdown-item" href="#"> Probki</a></li> -->
+
           </ul>
+
+        </li>
+       <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Unixsex
+          </a>
+          <ul class="dropdown-menu">
+             <li><a class="dropdown-item" href="{% url 'category_page' 'Unisex' %}">Perfumy</a></li>
+            <!--<li><a class="dropdown-item" href="#"> Probki</a></li> -->
+          </ul>
+
         </li>
          <li class="nav-item">
           <a class="nav-link" href="#">Discover set</a>

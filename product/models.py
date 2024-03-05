@@ -13,6 +13,7 @@ class Product(models.Model):
     amount = models.IntegerField(default=1)
     is_on = models.BooleanField(default=True, blank=True)
     stars = models.IntegerField(default=0)
+    is_discoverset = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
