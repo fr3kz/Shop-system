@@ -27,6 +27,7 @@ class Product(models.Model):
         self.is_on = True
         self.save()
 
+
 class PerfumeOptions(models.Model):
     amount = models.IntegerField(default=1)  # in mililitres
     price = models.IntegerField(default=0)
@@ -74,6 +75,7 @@ class Card(models.Model):
     date = models.DateTimeField(default=django.utils.timezone.now, blank=True)
     is_shipped = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
+    free_shipping = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Zamowienie nr {self.id} - {self.user.last_name} "
@@ -88,6 +90,11 @@ class Card(models.Model):
         self.is_order = True
         self.save()
 
+    @staticmethod
+    def calculate_shipping(self):
+        if self.price >= 300:
+            self.free_shipping = True
+            self.save()
 
 class Promo_code(models.Model):
     code = models.CharField(max_length=10, default="")

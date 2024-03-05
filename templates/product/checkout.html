@@ -68,7 +68,15 @@
     {% endfor %}
 </ul>
 
-    <p class="mt-3">Cena całkowita: Zł{{ card_price }}</p>
+    <p class="mt-3">Wartość koszyka: {{ card_price }} Zł
+    {% if card.free_shipping %}
+        <span class="badge bg-success">Darmowa dostawa</span>
+    {% else %}
+        <span class="badge bg-danger">Koszt dostawy: 10 Zł </span>
+        <span class="badge bg-info">Darmowa dostawa od: 300 Zł </span>
+    {% endif %}
+    </p>
+
     {% if card_promocode %}
         <p class="mt-3">Kod promocyjny: {{ promocode.discount }}%</p>
     {% endif %}
@@ -84,21 +92,21 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="street" class="form-label">Ulica:</label>
-                                <input type="text" class="form-control" id="street" name="street">
+                                <input type="text" class="form-control" id="street" name="street" value="{{ request.user.address }}">
                             </div>
                             <div class="col-md-6">
                                 <label for="city" class="form-label">Miasto:</label>
-                                <input type="text" class="form-control" id="city" name="city">
+                                <input type="text" class="form-control" id="city" name="city" value="{{ request.user.city }}">
                             </div>
                         </div>
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="postal_code" class="form-label">Kod pocztowy:</label>
-                                <input type="text" class="form-control" id="postal_code" name="postal_code">
+                                <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{ request.user.postal_code }}">
                             </div>
                             <div class="col-md-6">
                                 <label for="phone_number" class="form-label">Numer telefonu:</label>
-                                <input type="text" class="form-control" id="phone_number" name="phone_number">
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ request.user.phone_number }}">
                             </div>
                         </div>
                         <div class="mb-3">

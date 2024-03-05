@@ -14,6 +14,11 @@ from sklep import settings
 from .models import Product, Card, Opinion, Promo_code, CardItem, PerfumeOptions
 from .forms import OpinionForm, AccountForm, PerfumeOptionsForm
 from users.models import User
+from django.shortcuts import redirect
+from django.utils import timezone
+from .models import CardItem
+
+from django.db.models import Sum
 
 
 # Create your views here.
@@ -78,6 +83,9 @@ class CardView(View):
                 card.price += option.price
                 card.save()
                 request.session['card'] = card.id
+
+                card.calculate_shipping(card)
+
                 return redirect('checkout')
 
             product_item = CardItem.objects.create(card=card, product=product)
@@ -90,6 +98,9 @@ class CardView(View):
 
             product_item.save()
             request.session['card'] = card.id
+
+            card.calculate_shipping(card)
+
 
             return redirect('checkout')
         else:
@@ -132,6 +143,7 @@ class Checkout(View):
                 'card_products': product_items,
                 'card_price': total_price,
                 'card_promocode': card_promocde,
+                'card': card,
                 'promocode': Promocode,
             }
             return render(request, 'product/checkout.html', context=context)
@@ -201,12 +213,6 @@ class UserAccount(View):
             return redirect('my_account')
 
 
-from django.shortcuts import redirect
-from django.utils import timezone
-from .models import CardItem
-
-from django.db.models import Sum
-
 def Billing(request):
     card = Card.objects.get(id=request.session['card'])
     user = request.user
@@ -220,7 +226,9 @@ def Billing(request):
     card.street = request.POST.get('street')
     card.user = user
     card.save()
-
+    card.calculate_shipping(card)
+    if not card.free_shipping:
+        card.price += 10
     line_items = []
 
     # Pobierz wszystkie elementy koszyka
@@ -250,6 +258,18 @@ def Billing(request):
             'quantity': carditem.quantity,
         })
 
+
+    if not card.free_shipping:
+        line_items.append({
+            'price_data': {
+                'currency': 'pln',
+                'product_data': {
+                    'name': 'Dostawa',
+                },
+                'unit_amount': 10*100,
+            },
+            'quantity': 1,
+        })
     stripe.api_key = settings.STRIPE_SECRET_KEY
 
     checkout_session = stripe.checkout.Session.create(
@@ -334,6 +354,11 @@ def update_card_price(card):
         total_price += item.price * item.quantity
 
     card.price = total_price
+
+    card.calculate_shipping(card)
+    if not card.free_shipping:
+        card.price += 10
+
     card.save()
 
 

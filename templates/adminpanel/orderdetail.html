@@ -38,7 +38,13 @@
                                         <td><strong>Dosatwa</strong></td>
                                         <td>1</td>
                                         <td></td>
-                                        <td>0</td>
+                                        <td>{% if card.free_shipping %}
+                                            Darmowa
+                                        {% else %}
+                                            10 zł
+
+                                        {% endif %}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td></td>
