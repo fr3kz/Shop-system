@@ -1,17 +1,19 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Perfumeria BLUM</a>
+    <a class="navbar-brand" href="{% url 'main_page' %}">Perfumeria BLUM</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarScroll">
       <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Sklep</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'main_page' %}">Sklep</a>
          </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Moje konto</a>
+        {% if user.is_authenticated %}
+             <li class="nav-item">
+          <a class="nav-link" href="{% url 'my_account' %}">Moje konto</a>
         </li>
+          {% endif %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Dla niego
@@ -34,15 +36,22 @@
             <li><a class="dropdown-item" href="#">Action </a></li>
           </ul>
         </li>
-
+         <li class="nav-item">
+          <a class="nav-link" href="#">Discover set</a>
+        </li>
 
 
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Zaloguj </button>
-           <button class="btn btn-outline-success" type="submit">Zarejestruj </button>
+
       </form>
+     {% if user.is_authenticated %}
+            <a class="btn btn-outline-success" href="{% url 'logout' %}" type="submit">Wyloguj </a>
+          {% else %}
+            <a class="btn btn-outline-success m-1"  href="{% url 'login' %}" type="submit">Zaloguj </a>
+           <a class="btn btn-outline-success m-1" href="{% url 'register' %}" type="submit">Zarejestruj </a>
+          {% endif %}
     </div>
   </div>
 </nav>
