@@ -1,6 +1,7 @@
 import django
 from django.db import models
 from users.models import User
+from utilities.models import ConstValue, ConstFile
 import datetime
 
 
@@ -8,12 +9,14 @@ class Product(models.Model):
     title = models.CharField(max_length=50)
     price = models.IntegerField()
     image = models.ImageField(upload_to="images/")
+    image2 = models.ImageField(upload_to="images/", blank=True)
     description = models.TextField()
     is_featured = models.BooleanField(default=False)
     amount = models.IntegerField(default=1)
     is_on = models.BooleanField(default=True, blank=True)
     stars = models.IntegerField(default=0)
     is_discoverset = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.title
@@ -96,7 +99,7 @@ class Card(models.Model):
 
     @staticmethod
     def calculate_shipping(self):
-        if self.price >= 300:
+        if self.price >= int(ConstValue.objects.get(name="free_shipping_price").value):
             self.free_shipping = True
             self.save()
         else:

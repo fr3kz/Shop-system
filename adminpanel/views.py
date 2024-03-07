@@ -4,7 +4,8 @@ from django.views import View
 from .forms import Loginform, AddProductForm, AddpromoCodeForm,PerfumeOptionsForm
 from product.models import Product, Promo_code, Card, Opinion,CardItem,PerfumeOptions
 from users.models import User
-
+from utilities.models import ConstValue, ConstFile
+from utilities.forms import ConstFileForm, ConstValueForm
 
 class LoginView(View):
     def get(self, request):
@@ -217,3 +218,83 @@ def add_perfume_options(request, product_id):
         perfoption.title = product.title
         perfoption.save()
         return redirect('stock' )
+
+
+class Utilities(View):
+    def get(self,request):
+        #3 zdjecia z strony glownej
+        img1 = ConstFile.objects.get(name="photo1")
+        img2 = ConstFile.objects.get(name="photo2")
+        img3 = ConstFile.objects.get(name="photo3")
+
+        img1form = ConstFileForm(instance=img1)
+        img2form = ConstFileForm(instance=img2)
+        img3form = ConstFileForm(instance=img3)
+
+
+        #ustawienia wysylki
+        shiping_price = ConstValue.objects.get(name="shipping")
+        shiping_free = ConstValue.objects.get(name="free_shipping")
+
+        shiping_free_form = ConstValueForm(instance=shiping_free)
+        shiping_price_form = ConstValueForm(instance=shiping_price)
+
+
+        #zarzadzenia kuponami
+        coupons = Promo_code.objects.all()
+
+        context = {
+            'img1':img1,
+            'img2':img2,
+            'img3':img3,
+            'img1form':img1form,
+            'img2form':img2form,
+            'img3form':img3form,
+            'shipping_price':shiping_price,
+            'shipping_free':shiping_free,
+            'shiping_free_form':shiping_free_form,
+            'shiping_price_form':shiping_price_form,
+            'coupons':coupons,
+        }
+
+        return render(request,"adminpanel/utilities.html",context=context)
+
+
+def edit_photo(request,name):
+    photo = ConstFile.objects.get(name=name)
+    form = ConstFileForm(request.POST, request.FILES, instance=photo)
+    print(request.POST)
+    print(request.FILES)
+
+    if form.is_valid():
+        form.save()
+        return redirect('utilities')
+    else:
+        return redirect('utilities')
+
+
+
+def edit_shipping_price(request):
+    item = ConstValue.objects.get(name="shipping")
+    form = ConstValueForm(request.POST, instance=item)
+    if form.is_valid():
+        form.save()
+        return redirect('utilities')
+    else:
+        return render(request, 'adminpanel/utilities.html', {'form': form})
+
+
+def edit_shipping_free(request):
+    item = ConstValue.objects.get(name="free_shipping")
+    form = ConstValueForm(request.POST, instance=item)
+    if form.is_valid():
+        form.save()
+        return redirect('utilities')
+    else:
+        return render(request, 'adminpanel/utilities.html', {'form': form})
+
+
+def delete_coupon(request,coupon_id):
+    item = Promo_code.objects.get(id=coupon_id)
+    item.delete()
+    return redirect('utilities')

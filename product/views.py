@@ -17,6 +17,7 @@ from users.models import User
 from django.shortcuts import redirect
 from django.utils import timezone
 from .models import CardItem
+from utilities.models import ConstValue, ConstFile
 
 from django.db.models import Sum
 
@@ -25,11 +26,20 @@ from django.db.models import Sum
 class MainView(View):
     products = Product.objects.all()
     fproducts = Product.objects.filter(is_featured=True)
+
+    #const pictures
+    img1 = ConstFile.objects.get(name='photo1')
+    img2 = ConstFile.objects.get(name='photo2')
+    img3 = ConstFile.objects.get(name='photo3')
+
     context = {
         'products': products,
         'fproducts': fproducts[:3],
         'men_products': Product.objects.filter(category__title='Men', is_on=True)[0:6],
         'woman_products': Product.objects.filter(category__title='Women', is_on=True)[0:6],
+        'img1': img1,
+        'img2': img2,
+        'img3': img3,
 
     }
 
@@ -90,7 +100,7 @@ class CardView(View):
                 return redirect('checkout')
 
             product_item = CardItem.objects.create(card=card, product=product)
-            product_item.size.add(option)  # Dodaj opcję do pola ManyToManyField
+            product_item.size.add(option)
 
             card.price += option.price
             card.save()
@@ -164,6 +174,9 @@ class Checkout(View):
                 card.price *= (1 - (promo.discount / 100))
                 card.promo_code = promo_code
                 card.save()
+
+                promo.max_count -= 1
+                promo.save()
                 return redirect('checkout')
             else:
                 return HttpResponse('Invalid promo code', status=400)
@@ -227,7 +240,7 @@ def Billing(request):
     card.save()
     card.calculate_shipping(card)
     if not card.free_shipping:
-        card.price += 10
+        card.price += int(ConstValue.objects.get(name='shipping').value)
     line_items = []
 
     # Pobierz wszystkie elementy koszyka
@@ -288,7 +301,7 @@ def Billing(request):
                 'product_data': {
                     'name': 'Dostawa',
                 },
-                'unit_amount': 10 * 100,
+                'unit_amount': ConstValue.objects.get(name="shipping").value * 100,
             },
             'quantity': 1,
         })
@@ -379,7 +392,7 @@ def update_card_price(card):
 
     card.calculate_shipping(card)
     if not card.free_shipping:
-        card.price += 10
+        card.price +=  int(ConstValue.objects.get(name='shipping').value)
 
     #promo code
     if card.promo_code:
