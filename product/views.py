@@ -24,27 +24,27 @@ from django.db.models import Sum
 
 # Create your views here.
 class MainView(View):
-    products = Product.objects.all()
-    fproducts = Product.objects.filter(is_featured=True)
-
-    #const pictures
-    img1 = ConstFile.objects.get(name='photo1')
-    img2 = ConstFile.objects.get(name='photo2')
-    img3 = ConstFile.objects.get(name='photo3')
-
-    context = {
-        'products': products,
-        'fproducts': fproducts[:3],
-        'men_products': Product.objects.filter(category__title='Men', is_on=True)[0:6],
-        'woman_products': Product.objects.filter(category__title='Women', is_on=True)[0:6],
-        'img1': img1,
-        'img2': img2,
-        'img3': img3,
-
-    }
 
     def get(self, request):
-        return render(request, 'product/main.html', context=self.context)
+        products = Product.objects.all()
+        fproducts = Product.objects.filter(is_featured=True)
+
+        # const pictures
+        img1 = ConstFile.objects.get(name='photo1')
+        img2 = ConstFile.objects.get(name='photo2')
+        img3 = ConstFile.objects.get(name='photo3')
+
+        context = {
+            'products': products,
+            'fproducts': fproducts[:3],
+            'men_products': Product.objects.filter(category__title='Men', is_on=True)[0:6],
+            'woman_products': Product.objects.filter(category__title='Women', is_on=True)[0:6],
+            'img1': img1,
+            'img2': img2,
+            'img3': img3,
+
+        }
+        return render(request, 'product/main.html', context=context)
 
 
 class ProductView(View):
