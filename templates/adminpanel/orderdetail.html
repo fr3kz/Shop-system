@@ -75,8 +75,8 @@
                                     <tr>
                                         <td>{{card.first_name}}</td>
                                         <td>{{card.last_name}}</td>
-                                        <td>{{card.address}}</td>
-                                        <td>{{card.phone}}</td>
+                                        <td>{{card.city}} {{ card.street }} {{ card.postal_code }}</td>
+                                        <td>{{card.phone_number}}</td>
                                         <td>{{card.email}}</td>
                                         <td>{{ card.paczkomat }}</td>
                                         <td>{% if card.is_paczkomat %}
