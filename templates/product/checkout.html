@@ -2,91 +2,101 @@
 
 {% block content %}
 <div class="container-fluid" style="background-color: #cccccc;">
-<div class="container" >
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card my-5">
-                <div class="card-body">
-                    <h1 class="text-center mb-4">Podsumowanie</h1>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card my-5">
+                    <div class="card-body">
+                        <h1 class="text-center mb-4">Podsumowanie</h1>
 
-                {% if card_id %}
-    <h2>Twój koszyk</h2>
-    <ul class="list-group">
-    {% for item in card_products %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ item.product.title }}  - {{ item.price }} zł
-        <div class="row">
-    <div class="col"></div>
-    <div class="col-8">
-        <form action="{% url 'update_card' item.product.id %}" method="POST" class="row align-items-center justify-content-end">
-            {% csrf_token %}
-            <input type="hidden" name="quantity" value="{{ item.quantity }}">
-            <div class="col-auto">
-                <select class="form-select" aria-label="Default select example" name="quantity_{{ item.product.id }}" id="quantity_{{ item.product.id }}">
-                    <option selected value="{{ item.quantity }}">{{ item.quantity }}</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                </select>
-            </div>
-            <div class="col-auto">
-                <button class="btn btn-info" type="submit">Odśwież</button>
-            </div>
-            <div class="col-auto">
-                <a href="{% url 'delete_product_from_card' item.product.id %}" class="btn btn-outline-danger" type="button" data-toggle="modal" data-target="#removeItem{{ item.id }}">Usuń</a>
-            </div>
-        </form>
-    </div>
-    <div class="col"></div>
-</div>
+                        {% if card_id %}
+                        <h2>Twój koszyk</h2>
+                        <ul class="list-group">
+                            {% for item in card_products %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ item.product.title }}  - {{ item.price }} zł
+                                <div class="row">
+                                    <div class="col"></div>
+                                    <div class="col-8">
+                                        <form action="{% url 'update_card' item.product.id %}" method="POST" class="row align-items-center justify-content-end">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="{{ item.quantity }}">
+                                            <div class="col-auto">
+                                                <select class="form-select" aria-label="Default select example" name="quantity_{{ item.product.id }}" id="quantity_{{ item.product.id }}">
+                                                    <option selected value="{{ item.quantity }}">{{ item.quantity }}</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button class="btn btn-info" type="submit">Odśwież</button>
+                                            </div>
+                                            <div class="col-auto">
+                                                <a href="{% url 'delete_product_from_card' item.product.id %}" class="btn btn-outline-danger" type="button" data-toggle="modal" data-target="#removeItem{{ item.id }}">Usuń</a>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col"></div>
+                                </div>
+                            </li>
+                            <!-- Modal -->
+                            <div class="modal fade" id="removeItem{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="removeItemLabel{{ item.id }}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="removeItemLabel{{ item.id }}">Remove Item</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to remove "{{ item.title }}" from your cart?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <a href="" class="btn btn-danger">Remove</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </ul>
 
+                        <p class="mt-3">Wartość koszyka: {{ card_price }} Zł
+                            {% if card.free_shipping %}
+                            <span class="badge bg-success">Darmowa dostawa</span>
+                            {% else %}
+                            <span class="badge bg-danger">Koszt dostawy: {{ shipping }} Zł </span>
+                            <span class="badge bg-info">Darmowa dostawa od: {{ free_shipping }} Zł </span>
+                            {% endif %}
+                        </p>
 
+                        {% if card_promocode %}
+                        <p class="mt-3">Kod promocyjny: {{ promocode.discount }}%</p>
+                        {% endif %}
+                        {% else %}
+                        <p>Your cart is empty.</p>
+                        {% endif %}
 
-        </li>
-        <!-- Modal -->
-        <div class="modal fade" id="removeItem{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="removeItemLabel{{ item.id }}" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="removeItemLabel{{ item.id }}">Remove Item</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        Are you sure you want to remove "{{ item.title }}" from your cart?
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <a href="" class="btn btn-danger">Remove</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-</ul>
+                        <h2 class="mt-5">Wybierz sposób dostawy</h2>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="delivery_method" id="courier" value="courier">
+                            <label class="form-check-label" for="courier">
+                                Kurier
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="delivery_method" id="parcel_locker" value="parcel_locker">
+                            <label class="form-check-label" for="parcel_locker">
+                                Paczkomat
+                            </label>
+                        </div>
 
-    <p class="mt-3">Wartość koszyka: {{ card_price }} Zł
-    {% if card.free_shipping %}
-        <span class="badge bg-success">Darmowa dostawa</span>
-    {% else %}
-        <span class="badge bg-danger">Koszt dostawy: {{ shipping }} Zł </span>
-        <span class="badge bg-info">Darmowa dostawa od: {{ free_shipping }} Zł </span>
-    {% endif %}
-    </p>
-
-    {% if card_promocode %}
-        <p class="mt-3">Kod promocyjny: {{ promocode.discount }}%</p>
-    {% endif %}
-{% else %}
-    <p>Your cart is empty.</p>
-{% endif %}
-
-
-
-                    <h2 class="mt-5">Dane do wysyłki</h2>
+                        <div id="courier_form" style="display: none;">
+                             <h2 class="mt-5">Dane do wysyłki</h2>
                     <form method="POST" action="{% url 'billing' %}" class="mt-3">
                         {% csrf_token %}
                         <div class="row mb-3">
@@ -123,26 +133,64 @@
                                 <input type="text" class="form-control" id="last_name" name="last_name" value="{{ request.user.last_name }}">
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="paczkomat" class="form-label">Paczkomat:</label>
-                            <input type="text" class="form-control" id="paczkomat" name="paczkomat">
-                                      <inpost-geowidget onpoint="afterPointSelected" token='eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJzQlpXVzFNZzVlQnpDYU1XU3JvTlBjRWFveFpXcW9Ua2FuZVB3X291LWxvIn0.eyJleHAiOjE5NTk4ODc1MjUsImlhdCI6MTY0NDUyNzUyNSwianRpIjoiZDUxMTI4OTEtN2RlMy00YjA4LWFmYTctMmFjMjg3ZjA0NTg0IiwiaXNzIjoiaHR0cHM6Ly9sb2dpbi5pbnBvc3QucGwvYXV0aC9yZWFsbXMvZXh0ZXJuYWwiLCJzdWIiOiJmOjEyNDc1MDUxLTFjMDMtNGU1OS1iYTBjLTJiNDU2OTVlZjUzNTprbGlwaW5za2lAZ3J1cGFpbnRlZ2VyLnBsIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoic2hpcHgiLCJzZXNzaW9uX3N0YXRlIjoiNDhkMjc2NzItNGI4MS00ZWUyLWI3ZWYtNmM1NTU3MTNiNTZkIiwiYWNyIjoiMSIsInNjb3BlIjoib3BlbmlkIGFwaTphcGlwb2ludHMiLCJhbGxvd2VkX3JlZmVycmVycyI6Imdlb3dpZGdldC5pbnBvc3QucGwiLCJ1dWlkIjoiYWIwZTViM2UtODYwMy00MzhjLTg0MjEtYTdhZmFkMDk5NjVkIn0.UhSolDS9UmaIo_6Nq50Rgk1bmrvfyZ1oGM0jdpgZNltAazPov-yx9NquDkwyCj8CvLRrIcBUa_Atz5suQhDB2-OY8yz5FQm9IB5wfMXA_hMeQqX1hN7tKlB7L8LeCiF2fPyiiHAo7uSMLdcNpSFBg30X9LJD_w84ut6-tHYG3A5OxKoRfY6QpzVYEnNZPBPbRxi7pwPOGubHdJCgDAg69ZhN0u1ToBV5ThsNjaF4pP8SttmCxKmt89RUc5Kr4IpEfpcQ0qIVwkvXKAPGVfue_qHBWv3-y-EgynBRTVgwMUpTDsq3s2ojzFKm8lh4ZfiA2saHaDUWmUGJefMQ89cPQg' language='pl'  config='parcelCollect'></inpost-geowidget>
-
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Złóż zamówienie</button>
+                    </form>
                         </div>
+
+                        <div id="parcel_locker_form" style="display: none;">
+                            <form method="POST" action="{% url 'pbilling' %}" class="mt-3">
+                        {% csrf_token %}
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" value="{{ request.user.email }}">
+                               </div>
+                            <div class="col-md-6">
+                                <label for="phone_number" class="form-label">Numer telefonu:</label>
+                                <input type="text" class="form-control" id="phone_number" name="phone_number" value="{{ request.user.phone_number }}">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="first_name" class="form-label">Imię:</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ request.user.first_name }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="last_name" class="form-label">Nazwisko:</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ request.user.last_name }}">
+                            </div>
+                        </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                <label for="paczkomat" class="form-label">Paczkomat:</label>
+                                <input type="text" class="form-control" id="paczkomat" name="paczkomat">
+                            </div>
+                                </div>
                         <button type="submit" class="btn btn-success btn-lg btn-block">Złóż zamówienie</button>
                     </form>
 
-                    <form action="{% url 'checkout' %}" method="post" class="mt-4">
+
+</div>
+
+                     <form action="{% url 'checkout' %}" method="post" class="mt-4">
                         {% csrf_token %}
                         <div class="input-group">
                             <input type="text" class="form-control" name="promo_code" placeholder="Podaj kod promocyjny">
-                            <button type="submit" class="btn btn-primary">Update price</button>
+                            <button type="submit" class="btn btn-primary">Dodaj kod</button>
                         </div>
                     </form>
+                        <script>
+                            document.querySelectorAll('input[name="delivery_method"]').forEach((elem) => {
+                                elem.addEventListener('change', (event) => {
+                                    document.getElementById('courier_form').style.display = event.target.value === 'courier' ? 'block' : 'none';
+                                    document.getElementById('parcel_locker_form').style.display = event.target.value === 'parcel_locker' ? 'block' : 'none';
+                                });
+                            });
+                        </script>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-    </div>
 {% endblock %}

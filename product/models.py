@@ -89,7 +89,9 @@ class Card(models.Model):
     date = models.DateTimeField(default=django.utils.timezone.now, blank=True)
     is_shipped = models.BooleanField(default=False)
     is_delivered = models.BooleanField(default=False)
+    is_paczkomat = models.BooleanField(default=False)
     free_shipping = models.BooleanField(default=False)
+    paczkomat = models.CharField(max_length=50, default="", blank=True)
 
     def __str__(self):
         return f"Zamowienie nr {self.id} - {self.user.last_name} "

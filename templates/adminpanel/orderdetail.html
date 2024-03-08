@@ -35,7 +35,7 @@
                                     </tr>
                                     {% endfor %}
                                     <tr>
-                                        <td><strong>Dosatwa</strong></td>
+                                        <td><strong>Dostawa </strong></td>
                                         <td>1</td>
                                         <td></td>
                                         <td>{% if card.free_shipping %}
@@ -68,6 +68,7 @@
                                         <th>Telefon</th>
                                         <th>Email</th>
                                         <th>Paczkomat</th>
+                                        <th>Czy paczkomat</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -77,7 +78,13 @@
                                         <td>{{card.address}}</td>
                                         <td>{{card.phone}}</td>
                                         <td>{{card.email}}</td>
-                                        <td>###########</td>
+                                        <td>{{ card.paczkomat }}</td>
+                                        <td>{% if card.is_paczkomat %}
+                                            Tak
+                                        {% else %}
+                                            Nie
+                                        {% endif %}
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -86,5 +93,6 @@
             </div>
 </div>
         </div>
+</div>
 </div>
 {% endblock %}

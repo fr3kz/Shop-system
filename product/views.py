@@ -306,7 +306,7 @@ def Billing(request):
                 'product_data': {
                     'name': 'Dostawa',
                 },
-                'unit_amount': ConstValue.objects.get(name="shipping").value * 100,
+                'unit_amount': int(ConstValue.objects.get(name="shipping").value)*100,
             },
             'quantity': 1,
         })
@@ -322,6 +322,101 @@ def Billing(request):
 
     curl = checkout_session.url
     return redirect(curl)
+
+def Inpost_Billing(request):
+        card = Card.objects.get(id=request.session['card'])
+        update_card_price(card)
+        user = request.user
+        card.first_name = request.POST.get('first_name')
+        card.last_name = request.POST.get('last_name')
+        card.email = request.POST.get('email')
+        card.date = timezone.now()
+        card.phone_number = request.POST.get('phone_number')
+        card.paczkomat = request.POST.get('paczkomat')
+        card.is_paczkomat = True
+        card.user = user
+        card.save()
+        card.calculate_shipping(card)
+        if not card.free_shipping:
+            card.price += int(ConstValue.objects.get(name='shipping').value)
+        line_items = []
+
+        # Pobierz wszystkie elementy koszyka
+        cart_items = CardItem.objects.filter(card=card)
+
+        # Zlicz ilość każdego produktu w koszyku
+        product_quantities = cart_items.values('product__id', 'product__carditem__price').annotate(
+            total_quantity=Sum('quantity'))
+
+        if card.promo_code:
+            promo = Promo_code.objects.get(code=card.promo_code)
+            for product_quantity in product_quantities:
+                product_id = product_quantity['product__id']
+                carditem = CardItem.objects.get(product__id=product_id, card=card,
+                                                price=product_quantity['product__carditem__price'], is_active=True)
+                total_quantity = product_quantity['total_quantity']
+
+                # Pobierz produkt
+                product = Product.objects.get(id=product_id)
+
+                # Dodaj pozycję do listy zakupów
+                line_items.append({
+                    'price_data': {
+                        'currency': 'pln',
+                        'product_data': {
+                            'name': str(
+                                product.title + ' - ' + str(
+                                    carditem.size.first().amount) + ' ml') + ' Z kodem promocyjnym'
+                        },
+                        'unit_amount': int((carditem.price * (1 - promo.discount / 100)) * 100),
+                    },
+                    'quantity': carditem.quantity,
+                })
+        else:
+            for product_quantity in product_quantities:
+                product_id = product_quantity['product__id']
+                carditem = CardItem.objects.get(product__id=product_id, card=card,
+                                                price=product_quantity['product__carditem__price'], is_active=True)
+                total_quantity = product_quantity['total_quantity']
+
+                # Pobierz produkt
+                product = Product.objects.get(id=product_id)
+
+                # Dodaj pozycję do listy zakupów
+                line_items.append({
+                    'price_data': {
+                        'currency': 'pln',
+                        'product_data': {
+                            'name': str(product.title + ' - ' + str(carditem.size.first().amount) + ' ml'),
+                        },
+                        'unit_amount': int(carditem.price * 100),
+                    },
+                    'quantity': carditem.quantity,
+                })
+
+        if not card.free_shipping:
+            line_items.append({
+                'price_data': {
+                    'currency': 'pln',
+                    'product_data': {
+                        'name': 'Dostawa',
+                    },
+                    'unit_amount': int(ConstValue.objects.get(name="shipping").value) * 100,
+                },
+                'quantity': 1,
+            })
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=["card", "blik", "p24", ],
+            line_items=line_items,
+            mode="payment",
+            success_url="https://orca-app-tiz3h.ondigitalocean.app/success/",
+            cancel_url="https://orca-app-tiz3h.ondigitalocean.app/cancel/",
+        )
+
+        curl = checkout_session.url
+        return redirect(curl)
 
 
 def live_search(request):
