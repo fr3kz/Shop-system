@@ -80,7 +80,7 @@ class Card(models.Model):
     street = models.CharField(max_length=100, default="", blank=True)
     city = models.CharField(max_length=100, default="", blank=True)
     postal_code = models.CharField(max_length=6, default="", blank=True)
-    phone_number = models.IntegerField(default="", blank=True, null=True)
+    phone_number = models.CharField(max_length=9, default="", blank=True)
     email = models.EmailField(default="", blank=True)
     first_name = models.CharField(max_length=50, default="", blank=True)
     last_name = models.CharField(max_length=50, default="", blank=True)
