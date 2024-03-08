@@ -101,7 +101,7 @@ class Card(models.Model):
     def calculate_shipping(self):
         if self.price >= int(ConstValue.objects.get(name="free_shipping").value):
             self.free_shipping = True
-            self.save()
+            self.save() 
         else:
             self.free_shipping = False
             self.save()

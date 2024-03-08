@@ -72,8 +72,8 @@
     {% if card.free_shipping %}
         <span class="badge bg-success">Darmowa dostawa</span>
     {% else %}
-        <span class="badge bg-danger">Koszt dostawy: 10 Zł </span>
-        <span class="badge bg-info">Darmowa dostawa od: 300 Zł </span>
+        <span class="badge bg-danger">Koszt dostawy: {{ shipping }} Zł </span>
+        <span class="badge bg-info">Darmowa dostawa od: {{ free_shipping }} Zł </span>
     {% endif %}
     </p>
 
@@ -135,7 +135,7 @@
                     <form action="{% url 'checkout' %}" method="post" class="mt-4">
                         {% csrf_token %}
                         <div class="input-group">
-                            <input type="text" class="form-control" name="promo_code" placeholder="Enter promo code">
+                            <input type="text" class="form-control" name="promo_code" placeholder="Podaj kod promocyjny">
                             <button type="submit" class="btn btn-primary">Update price</button>
                         </div>
                     </form>

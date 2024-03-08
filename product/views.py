@@ -147,13 +147,19 @@ class Checkout(View):
                 Promocode = Promo_code.objects.get(code=card_promocde)
 
             product_items = CardItem.objects.filter(card=card).all()
+
+
+            free_shipping = ConstValue.objects.get(name='free_shipping').value
+            shipping = ConstValue.objects.get(name='shipping').value
             context = {
                 'card_id': cardid,
                 'card_products': product_items,
-                'card_price': total_price,
+                'card_price': float(total_price),
                 'card_promocode': card_promocde,
                 'card': card,
                 'promocode': Promocode,
+                'free_shipping': free_shipping,
+                'shipping': shipping,
             }
             return render(request, 'product/checkout.html', context=context)
         else:
@@ -398,6 +404,7 @@ def update_card_price(card):
     if card.promo_code:
         promo = Promo_code.objects.get(code=card.promo_code)
         card.price *= (1 - (promo.discount / 100))
+        card.price = round(card.price, 2)
 
     card.save()
 

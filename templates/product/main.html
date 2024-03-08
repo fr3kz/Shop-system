@@ -32,7 +32,7 @@
 <!-- Polecane perfumy --->
 <div class="container-fluid p-0" style="background-color: #f2f2f2">
 <div class="container p-5" >
-    <p class="h1 font-weight-bold">Polecane Perfumy</p>
+    <p class="h2 font-weight-bold">Polecane Perfumy</p>
     <div class="row row-cols-1 row-cols-md-3 g-4">
          {% for product in fproducts %}
         <div class="col">
@@ -68,7 +68,9 @@
 <!-- Perfumy dla niego --->
 <div class="container-fluid" style="background-color: rgba(0, 0, 0, 0.1);   ">
 <div class="container p-5" >
-    <h1 class="font-weight-bold">Perfumy dla niego</h1>
+   <h2 class="font-weight-bold">
+    <a style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Men' %}">Perfumy dla niej</a>
+</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
       {% for product in men_products %}
             <div class="col">
@@ -100,7 +102,9 @@
 </div>
     <!--    Perfumy dla niej --->
 <div class="container p-5">
-    <h1 class="font-weight-bold">Perfumy dla niej</h1>
+<h2 class="font-weight-bold">
+    <a style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Women' %}">Perfumy dla niej</a>
+</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
       {% for product in woman_products %}
             <div class="col">
