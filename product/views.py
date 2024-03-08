@@ -26,8 +26,8 @@ from django.db.models import Sum
 class MainView(View):
 
     def get(self, request):
-        products = Product.objects.all()
-        fproducts = Product.objects.filter(is_featured=True)
+        products = Product.objects.filter(is_on=True, is_perfume=True)
+        fproducts = Product.objects.filter(is_featured=True, is_perfume=True, is_on=True)
 
         # const pictures
         img1 = ConstFile.objects.get(name='photo1')
@@ -37,8 +37,8 @@ class MainView(View):
         context = {
             'products': products,
             'fproducts': fproducts[:3],
-            'men_products': Product.objects.filter(category__title='Men', is_on=True)[0:6],
-            'woman_products': Product.objects.filter(category__title='Women', is_on=True)[0:6],
+            'men_products': Product.objects.filter(category__title='Men', is_on=True, is_perfume=True)[0:6],
+            'woman_products': Product.objects.filter(category__title='Women', is_on=True, is_perfume=True)[0:6],
             'img1': img1,
             'img2': img2,
             'img3': img3,
@@ -81,7 +81,6 @@ class CardView(View):
         if 'card' in request.session:
             card = Card.objects.filter(user=request.user, is_order=False).first()
             product = Product.objects.get(id=item_id)
-
 
             # Uzyskaj wybraną opcję z żądania POST
             option_id = request.POST.get('option')
@@ -147,7 +146,6 @@ class Checkout(View):
                 Promocode = Promo_code.objects.get(code=card_promocde)
 
             product_items = CardItem.objects.filter(card=card).all()
-
 
             free_shipping = ConstValue.objects.get(name='free_shipping').value
             shipping = ConstValue.objects.get(name='shipping').value
@@ -272,9 +270,10 @@ def Billing(request):
                 'price_data': {
                     'currency': 'pln',
                     'product_data': {
-                        'name': str(product.title + ' - ' + str(carditem.size.first().amount) + ' ml') + ' Z kodem promocyjnym'
+                        'name': str(
+                            product.title + ' - ' + str(carditem.size.first().amount) + ' ml') + ' Z kodem promocyjnym'
                     },
-                    'unit_amount': int((carditem.price *(1- promo.discount/100) ) * 100),
+                    'unit_amount': int((carditem.price * (1 - promo.discount / 100)) * 100),
                 },
                 'quantity': carditem.quantity,
             })
@@ -327,7 +326,7 @@ def Billing(request):
 
 def live_search(request):
     query = request.GET.get('query', '')
-    products = Product.objects.filter(title__icontains=query)
+    products = Product.objects.filter(title__icontains=query, is_on=True)
     product_titles = list(products.values_list('title', 'id'))
 
     return JsonResponse({'results': product_titles})
@@ -341,7 +340,9 @@ def success(request):
 
     for card_item in card_items:
         product = Product.objects.get(id=card_item.product.id)
+
         product.amount -= card_item.quantity
+        product.sell()
         product.save()
         card_item.is_active = False
         card_item.save()
@@ -398,9 +399,9 @@ def update_card_price(card):
 
     card.calculate_shipping(card)
     if not card.free_shipping:
-        card.price +=  int(ConstValue.objects.get(name='shipping').value)
+        card.price += int(ConstValue.objects.get(name='shipping').value)
 
-    #promo code
+    # promo code
     if card.promo_code:
         promo = Promo_code.objects.get(code=card.promo_code)
         card.price *= (1 - (promo.discount / 100))

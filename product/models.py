@@ -16,6 +16,7 @@ class Product(models.Model):
     is_on = models.BooleanField(default=True, blank=True)
     stars = models.IntegerField(default=0)
     is_discoverset = models.BooleanField(default=False)
+    is_perfume = models.BooleanField(default=False)
 
 
     def __str__(self):
@@ -30,6 +31,12 @@ class Product(models.Model):
     def set_on(self):
         self.is_on = True
         self.save()
+
+    @classmethod
+    def sell(cls):
+        if cls.amount ==1:
+            cls.set_off()
+
 
 
 class PerfumeOptions(models.Model):
@@ -101,7 +108,7 @@ class Card(models.Model):
     def calculate_shipping(self):
         if self.price >= int(ConstValue.objects.get(name="free_shipping").value):
             self.free_shipping = True
-            self.save() 
+            self.save()
         else:
             self.free_shipping = False
             self.save()
