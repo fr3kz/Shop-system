@@ -10,8 +10,9 @@
     </div>
     <div class="row">
         {% for product in products %}
-        <div class="col">
-            <div class="card h-100" style="margin: 10px;" >
+        <div class="col-md-4 mt-4">
+
+            <div class="card h-100" style="margin-top: 10px;margin-bottom: 10px;" >
               <img src="{{ product.image.url }}" class="card-img-top" style="height: 20vw;object-fit: contain; margin-top: 10px;" alt="..." >
              <div class="card-body">
 
@@ -26,7 +27,7 @@
                                     {% endfor %}                </p>
 
                 </div>
-                <div class="card-footer d-flex justify-content-between align-items-center">
+                <div class="card-footer d-flex justify-content-between align-items-center mb-2">
                     <p class="card-text">Cena: {{ product.price }} PLN</p>
                     <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Szczegóły</a>
                 </div>
