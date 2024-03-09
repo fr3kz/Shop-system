@@ -1,7 +1,7 @@
-from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import LoginForm, RegisterForm,CreateUserForm
+from .forms import LoginForm, RegisterForm, CreateUserForm
 from .models import User
 
 
@@ -27,6 +27,7 @@ class LoginView(View):
             print("not valid")
             print(form.errors)
         return render(request, 'users/loginpage.html', {'form': form})
+
 
 class RegisterView(View):
     def get(self, request):
