@@ -444,9 +444,12 @@ def success(request):
         card_item.save()
 
     card_items = CardItem.objects.filter(card=card).all()
+
+    shipping = ConstValue.objects.get(name='shipping').value
     context = {
         'card': card,
         'card_items': card_items,
+        'shipping': shipping,
     }
     del request.session['card']
 
