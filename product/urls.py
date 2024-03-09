@@ -12,6 +12,7 @@ urlpatterns = [
         path('cancel/',cancel,name='cancel'),
         path('live-search/',live_search,name='live-search'),
         path('my_orders/',UserOrders.as_view(),name='my_orders'),
+        path('order_detail/<int:order_id>/',UserOrders.as_view(),name='order_detail'),
         path('my_account/', UserAccount.as_view(), name='my_account'),
         path('afterpage/',AfterPage ,name='afterpage'),
         path('update_card/<int:item_id>/',update_card,name='update_card'),

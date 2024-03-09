@@ -73,6 +73,7 @@
                                     <th scope="col">Nazwa</th>
                                     <th scope="col">Data</th>
                                     <th scope="col">Stan</th>
+                                    <th scope="col">Akcje</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -88,8 +89,10 @@
                                     {% else %}
                                     <td>Oczekiwanie na wysyłkę</td>
                                     {% endif %}
+                                    <td><a href="{% url 'order_detail' order.id %}" class="btn btn-info">Szczegóły</a></td>
                                 </tr>
                                 {% endfor %}
+                            
                             </tbody>
                         </table>
                     </div>

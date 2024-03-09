@@ -1,38 +1,66 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="container">
-         <h1 class="mt-4">Zamowienia</h1>
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">Nazwa</th>
-                                <th scope="col">Data</th>
-                                <th scope="col">Stan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for order in orders %}
-                                <tr>
+   <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mt-5 mb-5">
+                    <div class="card-title">
+                        <h3 class="text-center">Zamowienie nr: {{card.id}} </h3>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="text-center">Podsumowanie zamowienia</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Produkt</th>
+                                        <th>Ilosc</th>
+                                        <th>Cena</th>
+                                        <th>Suma</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in card_items %}
+                                    <tr>
+                                        <td>{{item.product.title}} {% for option in item.size.all %}
+                                          {{ option.amount }} ml {{ option.price }} zł
+                                        </td>
+                                        <td>{{item.quantity}}</td>
+                                        <td>{{option.price}} zł</td>
+                                        <td>{{item.price}} zł</td>
+                                            {% endfor %}
 
-                                    <td>{{ order.user.email }}</td>
-                                    <td>{{ order.date }}</td>
-                                    {% if order.is_shipped %}
-                                        <td>Wyslano</td>
-                                    {% else %}
-                                        <td>Oczekiwanie na wysylke</td>
-                                    {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td><strong>Dosatwa</strong></td>
+                                        <td>1</td>
+                                        <td></td>
+                                        <td>{% if card.free_shipping %}
+                                            Darmowa
+                                        {% else %}
+                                            {{shipping}} zł
+                                        
+                                        {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><strong>Suma: {{card.price}} zł</strong></td>
+                                    </tr>
 
+                                </tbody>
+                            </table>
 
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                    </div>
                 </div>
+
+            </div>
+</div>
         </div>
-     </div>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+</div>
 
 {% endblock %}
