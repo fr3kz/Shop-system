@@ -8,13 +8,13 @@
     <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{{ img1.file.url }}" class="d-block w-100" alt="..." style="height: 75vh;">
+                <img src="{{ img1.file.url }}" class="d-block w-100" alt="..." style="height: 65vh;">
             </div>
             <div class="carousel-item">
-                <img src=" {{ img2.file.url }}" class="d-block w-100" alt="..." style="height: 75vh;">
+                <img src=" {{ img2.file.url }}" class="d-block w-100" alt="..." style="height: 65vh;">
             </div>
             <div class="carousel-item">
-                <img src="{{ img3.file.url }}" class="d-block w-100" alt="..." style="height: 75vh;">
+                <img src="{{ img3.file.url }}" class="d-block w-100" alt="..." style="height: 65vh;">
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
@@ -32,7 +32,7 @@
 <!-- Polecane perfumy --->
 <div class="container-fluid p-0" style="background-color: #f2f2f2">
 <div class="container p-5" >
-    <p class="h2 font-weight-bold">Polecane Perfumy</p>
+    <p class="h2 font-weight-bold text-center">Poecane Perfumy</p>
     <div class="row row-cols-1 row-cols-md-3 g-4">
          {% for product in fproducts %}
         <div class="col">
@@ -69,7 +69,7 @@
 <div class="container-fluid" style="background-color: rgba(0, 0, 0, 0.1);   ">
 <div class="container p-5" >
    <h2 class="font-weight-bold">
-    <a style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Men' %}">Perfumy dla Niego</a>
+    <p style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Men' %}" class="text-center">Perfumy dla Niego</p>
 </h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
       {% for product in men_products %}
@@ -103,7 +103,7 @@
     <!--    Perfumy dla niej --->
 <div class="container p-5">
 <h2 class="font-weight-bold">
-    <a style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Women' %}">Perfumy dla niej</a>
+    <p style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Women' %}" class="text-center">Perfumy dla niej</a>
 </h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
       {% for product in woman_products %}
