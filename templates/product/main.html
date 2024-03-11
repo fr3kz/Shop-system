@@ -3,7 +3,53 @@
 {% block content %}
 {% load static %}
 
-<!-- Zdjecia -->
+<style>
+    /* Animacje */
+    @keyframes fade-in-up {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card-animation {
+        animation: fade-in-up 1s ease forwards;
+    }
+
+    .zoom-animation {
+        transition: transform 0.3s;
+    }
+
+    .card:hover .zoom-animation {
+        transform: scale(1.05);
+    }
+</style>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var observer = new IntersectionObserver(function (entries, observer) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("card-animation");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: "0px 0px -100px 0px" });
+
+        var cards = document.querySelectorAll('.card');
+        cards.forEach(function (card) {
+            observer.observe(card);
+        });
+    });
+</script>
+
+<!-- Reszta kodu HTML -->
+<div class="container-fluid p-0">
 <div class="container-fluid p-0">
     <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
@@ -28,129 +74,123 @@
     </div>
 </div>
 
-
-<!-- Polecane perfumy --->
-<div class="container-fluid p-0" style="background-color: #f2f2f2">
-<div class="container p-5" >
-    <p class="h2 font-weight-bold text-center">Poecane Perfumy</p>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-         {% for product in fproducts %}
-        <div class="col">
-            <div class="card h-100" >
-              <img src="{{ product.image.url }}" class="card-img-top" style="height: 22vw;object-fit: contain; margin-top: 25px;" alt="..." >
-             <div class="card-body">
-
-                    <h5 class="card-title">{{ product.title }}</h5>
-                <p class="card-text">
- {% for i in '01234'|make_list %}
-                                        {% if i|add:'0' < product.stars %}
-                                            <i class="bi bi-star-fill"></i>
-                                        {% else %}
-                                            <i class="bi bi-star"></i>
-                                        {% endif %}
-                                    {% endfor %}                </p>
-
+    <!-- Polecane perfumy --->
+    <div class="container-fluid p-0" style="background-color: #f2f2f2">
+        <div class="container p-5">
+            <p class="h2 font-weight-bold text-center">Polecane Perfumy</p>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for product in fproducts %}
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ product.image.url }}" class="card-img-top zoom-animation" style="height: 22vw; object-fit: contain; margin-top: 25px; transition: all 0.5s ease;" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.title }}</h5>
+                            <p class="card-text">
+                                {% for i in '01234'|make_list %}
+                                {% if i|add:'0' < product.stars %}
+                                <i class="bi bi-star-fill"></i>
+                                {% else %}
+                                <i class="bi bi-star"></i>
+                                {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <p class="card-text">Cena: {{ product.price }} PLN</p>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Szczegóły</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-footer d-flex justify-content-between align-items-center">
-                    <p class="card-text">Cena: {{ product.price }} PLN</p>
-                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Szczegóły</a>
-                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-  </div>
-        {% endfor %}
-</div>
+    
+       <!-- Blok informacyjny --->
+    <div class="container-fluid" style="background-color: #333333">
+        <div class="row align-items-start text-center">
+            <div class="col-12 col-md p-3">
+                <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail" style="width: auto; height: 100px;" alt="...">
+                <p style="color: gold;" class="h4 mt-3 font-weight-bold">Darmowa wysylka</p>
+            </div>
+            <div class="col-12 col-md p-3">
+                <img src="https://www.shutterstock.com/image-vector/shipping-fast-delivery-24h-van-260nw-1511607011.jpg" class="img-thumbnail" style="width: auto; height: 100px;" alt="...">
+                <p style="color: mediumseagreen" class="h4 mt-3 font-weight-bold">Wysylka w 24h</p>
+            </div>
+            <div class="col-12 col-md p-3">
+                <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail" style="width: auto; height: 100px;" alt="...">
+                <p style="color: rosybrown" class="h4 mt-3 font-weight-bold">Mozliwosc zwrotu</p>
+            </div>
+        </div>
+    </div>
 
+    <!-- Perfumy dla niego --->
+    <div class="container-fluid" style="background-color: rgba(0, 0, 0, 0.1);">
+        <div class="container p-5">
+            <h2 class="font-weight-bold">
+                <p style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Men' %}" class="text-center">Perfumy dla Niego</p>
+            </h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% for product in men_products %}
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="{{ product.image.url }}" class="card-img-top zoom-animation" style="height: 20vw;object-fit: contain; margin-top: 10px;" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.title }}</h5>
+                            <p class="card-text">
+                                {% for i in '01234'|make_list %}
+                                {% if i|add:'0' < product.stars %}
+                                <i class="bi bi-star-fill"></i>
+                                {% else %}
+                                <i class="bi bi-star"></i>
+                                {% endif %}
+                                {% endfor %}
+                            </p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <p class="card-text">Cena: {{ product.price }} PLN</p>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Szczegóły</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-
-</div>
-
-</div>
-<!-- Perfumy dla niego --->
-<div class="container-fluid" style="background-color: rgba(0, 0, 0, 0.1);   ">
-<div class="container p-5" >
-   <h2 class="font-weight-bold">
-    <p style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Men' %}" class="text-center">Perfumy dla Niego</p>
-</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for product in men_products %}
+    <!-- Perfumy dla niej --->
+    <div class="container p-5">
+        <h2 class="font-weight-bold">
+            <p style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Women' %}" class="text-center">Perfumy dla niej</p>
+        </h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for product in woman_products %}
             <div class="col">
-            <div class="card h-100" >
-              <img src="{{ product.image.url }}" class="card-img-top" style="height: 20vw;object-fit: contain; margin-top: 10px;" alt="..." >
-             <div class="card-body">
-
-                    <h5 class="card-title">{{ product.title }}</h5>
-                <p class="card-text">
- {% for i in '01234'|make_list %}
-                                        {% if i|add:'0' < product.stars %}
-                                            <i class="bi bi-star-fill"></i>
-                                        {% else %}
-                                            <i class="bi bi-star"></i>
-                                        {% endif %}
-                                    {% endfor %}                </p>
-
+                <div class="card h-100">
+                    <img src="{{ product.image.url }}" class="card-img-top zoom-animation" style="height: 20vw;object-fit: contain; margin-top: 10px;" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.title }}</h5>
+                        <p class="card-text">
+                            {% for i in '01234'|make_list %}
+                            {% if i|add:'0' < product.stars %}
+                            <i class="bi bi-star-fill"></i>
+                            {% else %}
+                            <i class="bi bi-star"></i>
+                            {% endif %}
+                            {% endfor %}
+                        </p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <p class="card-text">Cena: {{ product.price }} PLN</p>
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Szczegóły</a>
+                    </div>
                 </div>
-                <div class="card-footer d-flex justify-content-between align-items-center">
-                    <p class="card-text">Cena: {{ product.price }} PLN</p>
-                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Szczegóły</a>
-                </div>
-    </div>
-  </div>
-        {% endfor %}
-</div>
-</div>
-
-</div>
-    <!--    Perfumy dla niej --->
-<div class="container p-5">
-<h2 class="font-weight-bold">
-    <p style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Women' %}" class="text-center">Perfumy dla niej</a>
-</h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-      {% for product in woman_products %}
-            <div class="col">
-            <div class="card h-100" >
-              <img src="{{ product.image.url }}" class="card-img-top" style="height: 20vw;object-fit: contain; margin-top: 10px;" alt="..." >
-             <div class="card-body">
-
-                    <h5 class="card-title">{{ product.title }}</h5>
-                <p class="card-text">
- {% for i in '01234'|make_list %}
-                                        {% if i|add:'0' < product.stars %}
-                                            <i class="bi bi-star-fill"></i>
-                                        {% else %}
-                                            <i class="bi bi-star"></i>
-                                        {% endif %}
-                                    {% endfor %}                </p>
-
-                </div>
-                <div class="card-footer d-flex justify-content-between align-items-center">
-                    <p class="card-text">Cena: {{ product.price }} PLN</p>
-                    <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">Szczegóły</a>
-                </div>
-    </div>
-  </div>
-        {% endfor %}
-</div>
-</div>
-
-
-    <!-- Blok informacyjny --->
-<div class="container-fluid" style="background-color: #333333">
-    <div class="row align-items-start text-center">
-        <div class="col-12 col-md p-3"> <!-- Dodano klasę col-12 -->
-            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail" style="width: auto; height: 100px;" alt="...">
-            <p style="color: gold;"class="h4 mt-3 font-weight-bold">Darmowa wysylka</p>
-        </div>
-        <div class="col-12 col-md p-3"> <!-- Dodano klasę col-12 -->
-            <img src="https://www.shutterstock.com/image-vector/shipping-fast-delivery-24h-van-260nw-1511607011.jpg" class="img-thumbnail" style="width: auto; height: 100px;" alt="...">
-            <p style="color: mediumseagreen"class="h4 mt-3 font-weight-bold">Wysylka w 24h</p>
-        </div>
-        <div class="col-12 col-md p-3"> <!-- Dodano klasę col-12 -->
-            <img src="https://png.pngtree.com/png-vector/20191105/ourmid/pngtree-delivery-truck-icon-png-image_1959172.jpg" class="img-thumbnail" style="width: auto; height: 100px;" alt="...">
-            <p style="color: rosybrown"class="h4 mt-3 font-weight-bold">Mozliwosc zwrotu</p>
+            </div>
+            {% endfor %}
         </div>
     </div>
-</div>
 
+ 
+</div>
 
 {% endblock %}
