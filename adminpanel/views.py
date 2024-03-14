@@ -1,11 +1,12 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import Loginform, AddProductForm, AddpromoCodeForm,PerfumeOptionsForm
-from product.models import Product, Promo_code, Card, Opinion,CardItem,PerfumeOptions
+from .forms import Loginform, AddProductForm, AddpromoCodeForm, PerfumeOptionsForm
+from product.models import Product, Promo_code, Card, Opinion, CardItem, PerfumeOptions
 from users.models import User
 from utilities.models import ConstValue, ConstFile
 from utilities.forms import ConstFileForm, ConstValueForm
+
 
 class LoginView(View):
     def get(self, request):
@@ -34,9 +35,8 @@ class AdminPanelView(View):
         product_form = AddProductForm()
         promo_code_form = AddpromoCodeForm()
 
-
-        #show not shipped orders
-        not_shipped_orders = Card.objects.filter(is_shipped=False,is_order=True)
+        # show not shipped orders
+        not_shipped_orders = Card.objects.filter(is_shipped=False, is_order=True)
 
         context = {
             'orders_count': orders_count,
@@ -80,8 +80,8 @@ class AddProductView(View):
             form.save()
             return redirect('adminpanel')
         elif perfume_form.is_valid():
-                perfume_form.save()
-                return redirect('adminpanel')
+            perfume_form.save()
+            return redirect('adminpanel')
         else:
             return render(request, 'adminpanel/addproduct.html', {'form': form})
 
@@ -165,10 +165,12 @@ class ProductEditView(View):
         else:
             return render(request, 'adminpanel/editproduct.html', {'form': form})
 
+
 def set_off_product(request, product_id):
     product = Product.objects.get(id=product_id)
     product.set_off(self=product)
     return redirect('stock')
+
 
 def set_on_product(request, product_id):
     product = Product.objects.get(id=product_id)
@@ -202,7 +204,7 @@ class CardDetailsView(View):
         card_items = CardItem.objects.filter(card=card).all()
         context = {
             'card': card,
-            'card_items':card_items,
+            'card_items': card_items,
         }
         return render(request, 'adminpanel/orderdetail.html', context=context)
 
@@ -212,17 +214,16 @@ def add_perfume_options(request, product_id):
     form = PerfumeOptionsForm(request.POST)
 
     if form.is_valid():
-
         perfoption = form.save()
         perfoption.product = product
         perfoption.title = product.title
         perfoption.save()
-        return redirect('stock' )
+        return redirect('stock')
 
 
 class Utilities(View):
-    def get(self,request):
-        #3 zdjecia z strony glownej
+    def get(self, request):
+        # 3 zdjecia z strony glownej
         img1 = ConstFile.objects.get(name="photo1")
         img2 = ConstFile.objects.get(name="photo2")
         img3 = ConstFile.objects.get(name="photo3")
@@ -231,36 +232,34 @@ class Utilities(View):
         img2form = ConstFileForm(instance=img2)
         img3form = ConstFileForm(instance=img3)
 
-
-        #ustawienia wysylki
+        # ustawienia wysylki
         shiping_price = ConstValue.objects.get(name="shipping")
         shiping_free = ConstValue.objects.get(name="free_shipping")
 
         shiping_free_form = ConstValueForm(instance=shiping_free)
         shiping_price_form = ConstValueForm(instance=shiping_price)
 
-
-        #zarzadzenia kuponami
+        # zarzadzenia kuponami
         coupons = Promo_code.objects.all()
 
         context = {
-            'img1':img1,
-            'img2':img2,
-            'img3':img3,
-            'img1form':img1form,
-            'img2form':img2form,
-            'img3form':img3form,
-            'shipping_price':shiping_price,
-            'shipping_free':shiping_free,
-            'shiping_free_form':shiping_free_form,
-            'shiping_price_form':shiping_price_form,
-            'coupons':coupons,
+            'img1': img1,
+            'img2': img2,
+            'img3': img3,
+            'img1form': img1form,
+            'img2form': img2form,
+            'img3form': img3form,
+            'shipping_price': shiping_price,
+            'shipping_free': shiping_free,
+            'shiping_free_form': shiping_free_form,
+            'shiping_price_form': shiping_price_form,
+            'coupons': coupons,
         }
 
-        return render(request,"adminpanel/utilities.html",context=context)
+        return render(request, "adminpanel/utilities.html", context=context)
 
 
-def edit_photo(request,name):
+def edit_photo(request, name):
     photo = ConstFile.objects.get(name=name)
     form = ConstFileForm(request.POST, request.FILES, instance=photo)
     print(request.POST)
@@ -271,7 +270,6 @@ def edit_photo(request,name):
         return redirect('utilities')
     else:
         return redirect('utilities')
-
 
 
 def edit_shipping_price(request):
@@ -294,7 +292,18 @@ def edit_shipping_free(request):
         return render(request, 'adminpanel/utilities.html', {'form': form})
 
 
-def delete_coupon(request,coupon_id):
+def delete_coupon(request, coupon_id):
     item = Promo_code.objects.get(id=coupon_id)
     item.delete()
     return redirect('utilities')
+
+
+class DiscoversetMainPage(View):
+    def get(self, request):
+        discover_set = Product.objects.filter(is_discoverset=True)
+
+        context = {
+            'discover_set': discover_set
+        }
+
+        return render(request, "adminpanel/discoversets.html", context=context)
