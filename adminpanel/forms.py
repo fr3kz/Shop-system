@@ -3,7 +3,7 @@ from typing import Any
 from django.contrib.auth import authenticate
 from django.forms import forms, ModelForm
 from users.models import User
-from product.models import Product, Promo_code,PerfumeOptions
+from product.models import Product, Promo_code, PerfumeOptions
 
 
 class Loginform(forms.Form):
@@ -35,3 +35,10 @@ class PerfumeOptionsForm(ModelForm):
     class Meta:
         model = PerfumeOptions
         fields = ['amount', 'price']
+
+
+class DiscoversetForm(ModelForm):
+    class Meta:
+        model = Product
+        fields = "__all__"
+

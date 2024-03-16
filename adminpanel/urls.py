@@ -3,7 +3,8 @@ from django.urls import path
 from django.contrib.auth.views import LoginView
 from .views import (AdminPanelView, AddProductView, AddPromoCodeView, OrdersView, StockView, OpinionsView,
                     set_off_product, ProductEditView, mark_order_as_shipped, mark_order_as_delivered, delete_opinion,
-                    CardDetailsView,add_perfume_options,set_on_product,Utilities,edit_shipping_price,edit_shipping_free,edit_photo,delete_coupon,DiscoversetMainPage)
+                    CardDetailsView,add_perfume_options,set_on_product,Utilities,edit_shipping_price,edit_shipping_free,edit_photo,delete_coupon,DiscoversetMainPage,
+                    EditDiscoverSet,add_discoverset_options)
 
 
 def staff_member_required(user):
@@ -31,4 +32,6 @@ urlpatterns = [
     path('edit_photo/<str:name>/', user_passes_test(staff_member_required, login_url='/login/')(edit_photo), name='edit_photo'),
     path('delete_coupon/<int:coupon_id>/', user_passes_test(staff_member_required, login_url='/login/')(delete_coupon), name='delete_coupon'),
     path('discover_sets/',user_passes_test(staff_member_required,login_url='/login/')(DiscoversetMainPage.as_view()), name="discover_sets"),
+    path('editdiscover_sets/<int:product_id>/',user_passes_test(staff_member_required,login_url='/login/')(EditDiscoverSet.as_view()),name="editdiscover_set"),
+    path('add_discoverset_options/<int:product_id>/',user_passes_test(staff_member_required,login_url="/login/")(add_discoverset_options),name="adddiscoversetoptions")
 ]

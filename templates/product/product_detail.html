@@ -27,7 +27,11 @@
                     </div>
                     <button type="submit" class="btn btn-primary mt-3">Dodaj do koszyka</button>
                 </form>
-                <img src="{{ product.image2.url }}" alt="like" class="img-fluid mt-3" >
+               {% if product.image2 %}
+    <img src="{{ product.image2.url }}" alt="like" class="img-fluid mt-3">
+{% else %}
+    <p>No second image available</p>
+{% endif %}
             </div>
         </div>
     </div>

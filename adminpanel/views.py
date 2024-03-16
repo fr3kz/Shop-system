@@ -1,7 +1,7 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
-from .forms import Loginform, AddProductForm, AddpromoCodeForm, PerfumeOptionsForm
+from .forms import Loginform, AddProductForm, AddpromoCodeForm, PerfumeOptionsForm, DiscoversetForm
 from product.models import Product, Promo_code, Card, Opinion, CardItem, PerfumeOptions
 from users.models import User
 from utilities.models import ConstValue, ConstFile
@@ -116,8 +116,8 @@ class OrdersView(View):
 
 class StockView(View):
     def get(self, request):
-        products = Product.objects.all()
-        featured_products = Product.objects.filter(is_featured=True)
+        products = Product.objects.filter(is_perfume=True)
+        featured_products = Product.objects.filter(is_featured=True, is_perfume=True)
 
         context = {
             'products': products,
@@ -300,10 +300,70 @@ def delete_coupon(request, coupon_id):
 
 class DiscoversetMainPage(View):
     def get(self, request):
-        discover_set = Product.objects.filter(is_discoverset=True)
+        discover_sets = Product.objects.filter(is_discoverset=True, is_on=True)
+        form = DiscoversetForm()
 
         context = {
-            'discover_set': discover_set
+            'discover_sets': discover_sets,
+            'form': form,
+
         }
 
         return render(request, "adminpanel/discoversets.html", context=context)
+
+    def post(self, request):
+        form = DiscoversetForm(request.POST, request.FILES)
+
+        if form.is_valid():
+
+            product = form.save(commit=False)
+            product.make_discoverset(product)
+            product.save()
+            return redirect('discover_sets')
+        else:
+            print(form.errors)
+            return redirect('adminpanel')
+
+
+class EditDiscoverSet(View):
+    def get(self, request, product_id):
+        product = Product.objects.get(id=product_id)
+        product_options = PerfumeOptions.objects.filter(product__id=product_id)
+
+        product_options_form = PerfumeOptionsForm()
+        form = DiscoversetForm(instance=product)
+
+        context = {
+            'product': product,
+            'perfume_form': product_options_form,
+            'product_options': product_options,
+            'form': form,
+        }
+
+        return render(request, 'adminpanel/editdiscoverset.html', context=context)
+
+    def post(self, request, product_id):
+        product = Product.objects.get(id=product_id)
+
+        form = DiscoversetForm(request.POST, request.FILES, instance=product)
+
+        if form.is_valid():
+            form.save()
+            return redirect('editdiscover_set',product_id)
+        else:
+            context = {
+                'errors': form.errors
+            }
+            return render(request, 'adminpanel/editdiscoverset.html', context=context)
+
+
+def add_discoverset_options(request, product_id):
+    product = Product.objects.get(id=product_id)
+    form = PerfumeOptionsForm(request.POST)
+
+    if form.is_valid():
+        perfoption = form.save()
+        perfoption.product = product
+        perfoption.title = product.title
+        perfoption.save()
+        return redirect('discover_sets')

@@ -2,13 +2,12 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1 class="mb-4">Discover sety</h1>
+    <h1 class="mb-4">Edytuj produkt</h1>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
-
                 <div class="card-body">
-                    <form method="post" action="{% url 'discover_sets' %}" enctype="multipart/form-data" class="row g-3">
+                    <form method="post" action="{% url 'editdiscover_set' product.id %}" enctype="multipart/form-data" class="row g-3">
                         {% csrf_token %}
                         {{ form.non_field_errors }}
                         <div class="col-12">
@@ -31,7 +30,11 @@
                             {{ form.image }}
                             {{ form.image.errors }}
                         </div>
-
+                        <div class="col-12">
+                            <label for="inputIsFeatured" class="form-label">Czy wyróżniony</label>
+                            {{ form.is_featured }}
+                            {{ form.is_featured.errors }}
+                        </div>
                         <div class="col-12">
                             <label for="inputAmount" class="form-label">Ilość</label>
                             {{ form.amount }}
@@ -59,15 +62,45 @@
 
                  <div class="card" style="margin-bottom: 20px;">
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Lista discover setow</h5>
-                      {% for product in discover_sets %}
-                        <a href="{% url 'editdiscover_set' product.id %}"> {{ product.title }}</a>
-                    {% endfor %}
+                    <h5 class="card-title mb-4">Ustawienia discoverset</h5>
+                    <form method="post" action="{% url 'adddiscoversetoptions' product.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_amount" class="form-label">Ilość dni?</label>
+                            {{ perfume_form.amount }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_price" class="form-label">Cena</label>
+                            <div class="input-group">
+                                <span class="input-group-text">PLN</span>
+                                {{ perfume_form.price }}
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Dodaj opcję</button>
+                    </form>
                 </div>
             </div>
             </div>
            <div class="row">
-
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Opcje Perfum</h5>
+            <div class="row">
+                {% for option in product_options %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">{{ option.product.title }}</h6>
+                            <p class="card-text">Ilość: {{ option.amount }} </p>
+                            <p class="card-text">Cena: {{ option.price }} PLN</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 
 

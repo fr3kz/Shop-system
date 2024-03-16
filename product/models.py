@@ -9,7 +9,7 @@ class Product(models.Model):
     title = models.CharField(max_length=50)
     price = models.IntegerField()
     image = models.ImageField(upload_to="images/")
-    image2 = models.ImageField(upload_to="images/", blank=True)
+    image2 = models.ImageField(upload_to="images/", blank=True,null=True)
     description = models.TextField()
     is_featured = models.BooleanField(default=False)
     amount = models.IntegerField(default=1)
@@ -17,7 +17,6 @@ class Product(models.Model):
     stars = models.IntegerField(default=0)
     is_discoverset = models.BooleanField(default=False)
     is_perfume = models.BooleanField(default=False)
-
 
     def __str__(self):
         return self.title
@@ -34,9 +33,13 @@ class Product(models.Model):
 
     @classmethod
     def sell(cls):
-        if cls.amount ==1:
+        if cls.amount == 1:
             cls.set_off()
 
+    @staticmethod
+    def make_discoverset(self):
+        self.is_discoverset = True
+        self.save()
 
 
 class PerfumeOptions(models.Model):
