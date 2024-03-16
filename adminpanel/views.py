@@ -348,7 +348,10 @@ class EditDiscoverSet(View):
         form = DiscoversetForm(request.POST, request.FILES, instance=product)
 
         if form.is_valid():
-            form.save()
+            product1 = form.save(commit=False)
+            product1.make_discoverset(product1)
+            product1.save()
+
             return redirect('editdiscover_set',product_id)
         else:
             context = {
