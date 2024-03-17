@@ -1,41 +1,64 @@
 {% extends 'base_admin.html' %}
 
 {% block content %}
-<div class="container-fluid" style="background-color: #e4e4e4;">
-    <div class="container mt-4" >
-        <h1 class="mb-4">Dodaj produkt</h1>
-        <div class="row">
-            <div class="col-md-8 ">
-                <div class="card" style="margin-bottom: 20px;">
-                    <div class="card-body">
-                        <form method="post" action="{% url 'addproduct' %}" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="mb-3">
-                                <label for="id_title" class="form-label">Tytuł</label>
-                                {{ form.title }}
-                            </div>
-                            <div class="mb-3">
-                                <label for="id_description" class="form-label">Opis</label>
-                                {{ form.description }}
-                            </div>
-                            <div class="mb-3">
-                                <label for="id_price" class="form-label">Cena</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">PLN</span>
-                                    {{ form.price }}
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="id_image" class="form-label">Zdjęcie</label>
-                                {{ form.image }}
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Zapisz</button>
-                        </form>
-                    </div>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="display-4 text-center">Dodaj produkt</h1>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'addproduct' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_title">Tytuł:</label>
+                            <input type="text" class="form-control" id="id_title" name="title">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_price">Cena:</label>
+                            <input type="number" class="form-control" id="id_price" name="price" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_image">Zdjęcie 1:</label>
+                            <input type="file" class="form-control-file" id="id_image" name="image">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_image2">Zdjęcie 2:</label>
+                            <input type="file" class="form-control-file" id="id_image2" name="image2" accept="image/*">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_description">Opis:</label>
+                            <textarea class="form-control" id="id_description" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="id_is_featured" name="is_featured">
+                            <label class="form-check-label" for="id_is_featured">Czy jest wyróżniony?</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_amount">Ilość:</label>
+                            <input type="number" class="form-control" id="id_amount" name="amount" value="1">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="id_is_on" name="is_on" checked>
+                            <label class="form-check-label" for="id_is_on">Czy jest aktywny?</label>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_stars">Liczba gwiazdek:</label>
+                            <input type="number" class="form-control" id="id_stars" name="stars" value="0">
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="id_is_discoverset" name="is_discoverset">
+                            <label class="form-check-label" for="id_is_discoverset">Discover set</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="id_is_perfume" name="is_perfume">
+                            <label class="form-check-label" for="id_is_perfume">Perfuma</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Zapisz</button>
+                    </form>
                 </div>
             </div>
-
         </div>
     </div>
 </div>

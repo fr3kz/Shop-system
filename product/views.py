@@ -516,8 +516,6 @@ def delete_from_card(request, item_id):
     update_card_price(card)
     return redirect('checkout')
 
-    # Todo: ogarnac zeby moglby byc te same perfumy ale z rozna wielkoscia
-
 
 class CategoryPage(View):
     def get(self, request, category):

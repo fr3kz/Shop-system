@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView
 from .views import (AdminPanelView, AddProductView, AddPromoCodeView, OrdersView, StockView, OpinionsView,
                     set_off_product, ProductEditView, mark_order_as_shipped, mark_order_as_delivered, delete_opinion,
                     CardDetailsView,add_perfume_options,set_on_product,Utilities,edit_shipping_price,edit_shipping_free,edit_photo,delete_coupon,DiscoversetMainPage,
-                    EditDiscoverSet,add_discoverset_options)
+                    EditDiscoverSet,add_discoverset_options,add_perfume_to_category,remove_perfume_from_category)
 
 
 def staff_member_required(user):
@@ -33,5 +33,7 @@ urlpatterns = [
     path('delete_coupon/<int:coupon_id>/', user_passes_test(staff_member_required, login_url='/login/')(delete_coupon), name='delete_coupon'),
     path('discover_sets/',user_passes_test(staff_member_required,login_url='/login/')(DiscoversetMainPage.as_view()), name="discover_sets"),
     path('editdiscover_sets/<int:product_id>/',user_passes_test(staff_member_required,login_url='/login/')(EditDiscoverSet.as_view()),name="editdiscover_set"),
-    path('add_discoverset_options/<int:product_id>/',user_passes_test(staff_member_required,login_url="/login/")(add_discoverset_options),name="adddiscoversetoptions")
+    path('add_discoverset_options/<int:product_id>/',user_passes_test(staff_member_required,login_url="/login/")(add_discoverset_options),name="adddiscoversetoptions"),
+    path('add_product_to_category/<int:product_id>/<int:category_id>/',user_passes_test(staff_member_required,login_url="/login/")(add_perfume_to_category),name="add_product_to_category"),
+    path('remove_product_from_category/<int:product_id>/<int:category_id>/',user_passes_test(staff_member_required,login_url="/login/")(remove_perfume_from_category),name="remove_product_from_category")
 ]

@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import Loginform, AddProductForm, AddpromoCodeForm, PerfumeOptionsForm, DiscoversetForm
-from product.models import Product, Promo_code, Card, Opinion, CardItem, PerfumeOptions
+from product.models import Product, Promo_code, Card, Opinion, CardItem, PerfumeOptions, Category
 from users.models import User
 from utilities.models import ConstValue, ConstFile
 from utilities.forms import ConstFileForm, ConstValueForm
@@ -142,12 +142,16 @@ class ProductEditView(View):
         perfume_options = PerfumeOptions.objects.filter(product=product).all()
         form = AddProductForm(instance=product)
         perfume_form = PerfumeOptionsForm()
+
+        categories = Category.objects.all()
+
         context = {
             'form': form,
             'product': product,
             'products': products,
             'perfume_form': perfume_form,
             'perfume_options': perfume_options,
+            'categories': categories,
         }
         return render(request, 'adminpanel/editproduct.html', context=context)
 
@@ -157,7 +161,9 @@ class ProductEditView(View):
         perfume_form = PerfumeOptionsForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            pr = form.save(commit=False)
+            pr.make_perfume(pr)
+            pr.save()
             return redirect('stock')
         elif perfume_form.is_valid():
             perfume_form.save()
@@ -319,6 +325,11 @@ class DiscoversetMainPage(View):
             product = form.save(commit=False)
             product.make_discoverset(product)
             product.save()
+
+            category = Category.objects.get(title="Discoverset")
+            category.products.add(product)
+            category.save()
+
             return redirect('discover_sets')
         else:
             print(form.errors)
@@ -352,7 +363,7 @@ class EditDiscoverSet(View):
             product1.make_discoverset(product1)
             product1.save()
 
-            return redirect('editdiscover_set',product_id)
+            return redirect('editdiscover_set', product_id)
         else:
             context = {
                 'errors': form.errors
@@ -370,3 +381,20 @@ def add_discoverset_options(request, product_id):
         perfoption.title = product.title
         perfoption.save()
         return redirect('discover_sets')
+
+
+def add_perfume_to_category(request, product_id,category_id):
+    product = Product.objects.get(id=product_id)
+    category = Category.objects.get(id=category_id)
+    category.products.add(product)
+    category.save()
+    return redirect('edit_product',product_id)
+
+
+def remove_perfume_from_category(request, product_id,category_id):
+    product = Product.objects.get(id=product_id)
+    category = Category.objects.get(id=category_id)
+    category.products.remove(product)
+    category.save()
+    return redirect('edit_product',product_id)
+

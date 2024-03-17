@@ -82,8 +82,8 @@
                 </div>
             </div>
             </div>
-           <div class="row">
-    <div class="card">
+            <div class="row">
+          <div class="card"  style="margin-bottom: 20px;">
         <div class="card-body">
             <h5 class="card-title">Opcje Perfum</h5>
             <div class="row">
@@ -99,6 +99,36 @@
                 </div>
                 {% endfor %}
             </div>
+        </div>
+    </div>
+</div>
+            <div class="row">
+                <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Kategorie</h5>
+           <div class="row">
+    {% for category in categories %}
+    <div class="col-md-4 mb-3">
+        {% if product in category.products.all %}
+        <div class="card" style="background-color: #a41515;">
+            <div class="card-body">
+                <a href="{% url 'remove_product_from_category' product.id category.id %}"><h6 class="card-title">{{ category.title }}</h6></a>
+                <!-- Dodaj tutaj dodatkowe informacje na temat produktu, jeśli to konieczne -->
+
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body">
+                <a href="{% url 'add_product_to_category' product.id category.id %}"><h6 class="card-title">{{ category.title }}</h6></a>
+                <!-- Dodaj tutaj informacje, gdy produkt nie jest związany z tą kategorią -->
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
         </div>
     </div>
 </div>

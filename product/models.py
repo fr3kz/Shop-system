@@ -41,6 +41,11 @@ class Product(models.Model):
         self.is_discoverset = True
         self.save()
 
+    @staticmethod
+    def make_perfume(self):
+        self.is_perfume = True
+        self.save()
+
 
 class PerfumeOptions(models.Model):
     amount = models.IntegerField(default=1)  # in mililitres
