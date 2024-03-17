@@ -529,7 +529,7 @@ class CategoryPage(View):
         return render(request, 'product/categoryview.html', context=context)
 
 
-def display_order(request,card_id):
+def display_order(request, card_id):
     card = Card.objects.get(id=card_id)
     shipping = ConstValue.objects.get(name='shipping').value
 
@@ -539,4 +539,15 @@ def display_order(request,card_id):
         'shipping': shipping,
     }
 
+    return render(request, 'product/user_orderview.html', context=context)
+
+
+def order_detail_user(request, order_id):
+    card = Card.objects.get(id=order_id)
+    shipping = ConstValue.objects.get(name='shipping').value
+    context = {
+        'card': card,
+        'card_items': CardItem.objects.filter(card=card),
+        'shipping': shipping,
+    }
     return render(request, 'product/user_orderview.html', context=context)
