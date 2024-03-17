@@ -115,7 +115,7 @@
     <div class="container-fluid" style="background-color: rgba(0, 0, 0, 0.1);">
         <div class="container p-5">
             <h2 class="font-weight-bold">
-                <p style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Men' %}" class="text-center">Perfumy dla Niego</p>
+                <a style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Men' %}" class="text-center"><p>Perfumy dla Niego</p></a>
             </h2>
             <div class="row row-cols-1 row-cols-md-3 g-4">
                 {% for product in men_products %}
@@ -148,7 +148,7 @@
     <!-- Perfumy dla niej --->
     <div class="container p-5">
         <h2 class="font-weight-bold">
-            <p style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Women' %}" class="text-center">Perfumy dla niej</p>
+            <a style="text-decoration: underline;color: black;" href="{% url 'category_page' 'Women' %}" class="text-center"><p>Perfumy dla niej</p></a>
         </h2>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for product in woman_products %}
